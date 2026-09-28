@@ -5,7 +5,7 @@
         {{-- Q-BKHM-02: Periode Anggaran --}}
         <div class="bg-white p-4 rounded shadow mb-6">
             <h3 class="font-bold mb-1">Periode Anggaran</h3>
-            <p class="text-xs text-gray-500 mb-3">Periode berjalan (dari rapat pimpinan) — dipakai saat mencatat perubahan saldo.</p>
+            <p class="text-xs text-gray-500 mb-3">Periode berjalan (dari rapat pimpinan): dipakai saat mencatat perubahan saldo.</p>
 
             @if($periodeAktif)
                 <p class="text-sm mb-3">Periode aktif: <span class="font-semibold text-indigo-700">{{ $periodeAktif->nama }}</span> ({{ $periodeAktif->tanggal_mulai->format('d/m/Y') }} – {{ $periodeAktif->tanggal_selesai->format('d/m/Y') }})</p>

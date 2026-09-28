@@ -1,20 +1,27 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <h2 class="font-bold text-2xl text-slate-800 leading-tight">
-                {{ __('Pusat Informasi & Regulasi') }}
-            </h2>
-            <p class="text-xs text-slate-500">Pusat dokumentasi berita ormawa dan regulasi resmi kemahasiswaan ITG</p>
-        </div>
+<x-public-layout title="Pusat Informasi & Regulasi" brand-label="Pusat Informasi & Regulasi" accent="indigo">
+    <x-slot name="nav">
+        @auth
+            <a href="{{ route('dashboard') }}" class="inline-flex items-center min-h-[44px] px-4 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 border border-slate-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">
+                Dashboard
+            </a>
+        @endauth
+        <a href="{{ route('layanan.index') }}" class="inline-flex items-center min-h-[44px] px-4 py-2 rounded-xl text-sm font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">
+            Portal Layanan
+        </a>
     </x-slot>
 
-    <div class="py-6" x-data="{ activeTab: 'pengumuman', showPengumumanModal: false, showRegulasiModal: false, searchDoc: '' }">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            
+    <div class="py-6" x-data="{ activeTab: 'pengumuman', showPengumumanModal: false, showRegulasiModal: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+
+            <div>
+                <h1 class="font-bold text-2xl text-slate-900 leading-tight">Pusat Informasi &amp; Regulasi</h1>
+                <p class="text-xs text-slate-600 mt-1">Pusat dokumentasi berita ormawa dan regulasi resmi kemahasiswaan ITG</p>
+            </div>
+
             @if ($errors->any())
-                <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg shadow-sm">
+                <div class="bg-rose-50 border-l-4 border-rose-500 text-rose-800 p-4 rounded-r-lg">
                     <div class="flex items-center gap-2 font-bold mb-1">
-                        <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                        <svg class="w-5 h-5 text-rose-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                         <span>Terjadi kesalahan pada input:</span>
                     </div>
                     <ul class="list-disc pl-5 text-sm space-y-0.5">
@@ -26,54 +33,60 @@
             @endif
 
             <!-- Tabs Navigation Bar -->
-            <div class="bg-white rounded-xl p-2 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="bg-white rounded-xl p-2 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
-                    <button @click="activeTab = 'pengumuman'" 
-                            :class="activeTab === 'pengumuman' ? 'bg-indigo-600 text-white shadow-sm font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'" 
-                            class="py-2.5 px-5 rounded-lg text-sm transition-all flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                        <span>Berita & Pengumuman</span>
+                    <button @click="activeTab = 'pengumuman'"
+                            :class="activeTab === 'pengumuman' ? 'bg-indigo-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'"
+                            :aria-selected="activeTab === 'pengumuman'"
+                            class="min-h-[44px] px-5 rounded-lg text-sm transition-all flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                        <span>Berita &amp; Pengumuman</span>
                     </button>
-                    <button @click="activeTab = 'regulasi'" 
-                            :class="activeTab === 'regulasi' ? 'bg-indigo-600 text-white shadow-sm font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'" 
-                            class="py-2.5 px-5 rounded-lg text-sm transition-all flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                        <span>Regulasi & Pedoman</span>
+                    <button @click="activeTab = 'regulasi'"
+                            :class="activeTab === 'regulasi' ? 'bg-indigo-600 text-white font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'"
+                            :aria-selected="activeTab === 'regulasi'"
+                            class="min-h-[44px] px-5 rounded-lg text-sm transition-all flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        <span>Regulasi &amp; Pedoman</span>
                     </button>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2">
                     @hasrole('bkhm')
-                    <button x-show="activeTab === 'pengumuman'" @click="showPengumumanModal = true" class="inline-flex items-center gap-1.5 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-3.5 rounded-lg text-xs sm:text-sm shadow-sm transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        <span>+ Pengumuman Resmi Kampus</span>
+                    <a href="{{ route('bkhm.kurasi.index') }}" x-show="activeTab === 'pengumuman'" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold min-h-[44px] px-3.5 rounded-lg text-xs sm:text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                        <span>Kurasi Berita Kampus</span>
+                        @if($antreanKurasiCount > 0)
+                            <span class="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white">{{ $antreanKurasiCount }}</span>
+                        @endif
+                    </a>
+                    <button x-show="activeTab === 'pengumuman'" @click="showPengumumanModal = true" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold min-h-[44px] px-3.5 rounded-lg text-xs sm:text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        <span>Tambah Pengumuman Resmi</span>
                     </button>
                     @endhasrole
 
                     @hasrole('bem')
-                    <a href="{{ route('bem.kurasi.index') }}" x-show="activeTab === 'pengumuman'" class="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-3 rounded-lg text-xs sm:text-sm shadow-sm transition-all">
-                        <span>Kurasi Berita</span>
-                        @if($antreanKurasiCount > 0)
-                            <span class="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white animate-pulse">{{ $antreanKurasiCount }}</span>
-                        @endif
-                    </a>
-                    <button x-show="activeTab === 'pengumuman'" @click="showPengumumanModal = true" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3.5 rounded-lg text-xs sm:text-sm shadow-sm transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        <span>+ Pengumuman BEM</span>
-                    </button>
-                    @endhasrole
-
-                    @hasrole('ormawa')
-                    <button x-show="activeTab === 'pengumuman'" @click="showPengumumanModal = true" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-3.5 rounded-lg text-xs sm:text-sm shadow-sm transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        <span>+ Ajukan Berita / Pamflet Acara</span>
+                    <button x-show="activeTab === 'pengumuman'" @click="showPengumumanModal = true" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold min-h-[44px] px-3.5 rounded-lg text-xs sm:text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        <span>Ajukan Berita / Agenda BEM</span>
                     </button>
                     @endhasrole
 
                     @hasrole('bpm')
-                    <button x-show="activeTab === 'regulasi'" @click="showRegulasiModal = true" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg text-sm shadow-sm transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        <span>+ Tambah Regulasi / UU</span>
+                    <button x-show="activeTab === 'pengumuman'" @click="showPengumumanModal = true" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold min-h-[44px] px-3.5 rounded-lg text-xs sm:text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        <span>Ajukan Berita / Warta BPM</span>
+                    </button>
+                    <button x-show="activeTab === 'regulasi'" @click="showRegulasiModal = true" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold min-h-[44px] px-4 rounded-lg text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        <span>Tambah Regulasi / UU</span>
+                    </button>
+                    @endhasrole
+
+                    @hasrole('ormawa')
+                    <button x-show="activeTab === 'pengumuman'" @click="showPengumumanModal = true" class="inline-flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold min-h-[44px] px-3.5 rounded-lg text-xs sm:text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        <span>Ajukan Berita / Pamflet Acara</span>
                     </button>
                     @endhasrole
                 </div>
@@ -84,38 +97,43 @@
 
                 <!-- Filter Kategori Pengumuman -->
                 <div class="flex flex-wrap items-center gap-2 text-xs">
-                    <span class="text-slate-500 font-semibold mr-1">Filter Kategori:</span>
-                    <a href="{{ route('informasi.index') }}" class="px-3 py-1.5 rounded-lg font-medium transition {{ empty($kategoriFilter) || $kategoriFilter === 'semua' ? 'bg-slate-900 text-white shadow-xs' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100' }}">
+                    <span class="text-slate-600 font-semibold mr-1">Filter Kategori:</span>
+                    <a href="{{ route('informasi.index') }}" class="inline-flex items-center min-h-[44px] px-3.5 rounded-lg font-medium transition {{ empty($kategoriFilter) || $kategoriFilter === 'semua' ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100' }}">
                         Semua
                     </a>
-                    <a href="{{ route('informasi.index', ['kategori' => 'resmi_kampus']) }}" class="px-3 py-1.5 rounded-lg font-medium transition {{ $kategoriFilter === 'resmi_kampus' ? 'bg-blue-700 text-white shadow-xs' : 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50' }}">
-                        🏛️ Resmi Kampus (BKHM)
+                    <a href="{{ route('informasi.index', ['kategori' => 'resmi_kampus']) }}" class="inline-flex items-center min-h-[44px] px-3.5 rounded-lg font-medium transition {{ $kategoriFilter === 'resmi_kampus' ? 'bg-indigo-700 text-white' : 'bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-50' }}">
+                        Resmi Kampus (BKHM)
                     </a>
-                    <a href="{{ route('informasi.index', ['kategori' => 'kegiatan_kemahasiswaan']) }}" class="px-3 py-1.5 rounded-lg font-medium transition {{ $kategoriFilter === 'kegiatan_kemahasiswaan' ? 'bg-indigo-700 text-white shadow-xs' : 'bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-50' }}">
-                        ⚡ Agenda & Acara Ormawa
+                    <a href="{{ route('informasi.index', ['kategori' => 'kegiatan_kemahasiswaan']) }}" class="inline-flex items-center min-h-[44px] px-3.5 rounded-lg font-medium transition {{ $kategoriFilter === 'kegiatan_kemahasiswaan' ? 'bg-indigo-700 text-white' : 'bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-50' }}">
+                        Agenda &amp; Acara Ormawa
                     </a>
                 </div>
 
-                @hasrole('ormawa')
+                @hasanyrole('ormawa|bem|bpm')
                 @if($pengumumanSaya->isNotEmpty())
-                    <!-- Status Pengajuan Berita Ormawa Saya -->
-                    <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-5 border border-emerald-200/80 shadow-xs mb-6">
+                    <!-- Status Pengajuan Berita Lembaga Saya -->
+                    <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-200 mb-6">
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">📢</span>
-                                <h4 class="font-bold text-sm text-emerald-950">Status Pengajuan Berita Organisasi Saya</h4>
+                                <span class="w-7 h-7 rounded-full bg-emerald-700 text-white flex items-center justify-center">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5 6 9H3v6h3l5 4V5z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.5 8.5a5 5 0 0 1 0 7"/>
+                                    </svg>
+                                </span>
+                                <h4 class="font-bold text-sm text-emerald-950">Status Pengajuan Berita Saya (Kurasi BKHM)</h4>
                             </div>
-                            <span class="text-xs text-emerald-700 font-medium">{{ $pengumumanSaya->count() }} diajukan</span>
+                            <span class="text-xs text-emerald-800 font-medium">{{ $pengumumanSaya->count() }} pengajuan</span>
                         </div>
                         <div class="space-y-2">
                             @foreach($pengumumanSaya as $ps)
-                                <div class="bg-white/90 border border-emerald-100 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                                <div class="bg-white border border-emerald-100 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
                                     <div class="space-y-0.5">
                                         <span class="font-bold text-slate-800">{{ $ps->judul }}</span>
-                                        <span class="text-slate-400 block text-[11px]">{{ $ps->created_at->format('d/m/Y H:i') }}</span>
+                                        <span class="text-slate-500 block text-[11px]">{{ $ps->created_at->format('d/m/Y H:i') }}</span>
                                         @if($ps->catatan_kurasi)
-                                            <div class="text-rose-700 bg-rose-50 p-1.5 rounded mt-1 text-[11px]">
-                                                <strong>Catatan BEM:</strong> {{ $ps->catatan_kurasi }}
+                                            <div class="text-rose-800 bg-rose-50 p-1.5 rounded mt-1 text-[11px]">
+                                                <strong>Catatan Revisi BKHM:</strong> {{ $ps->catatan_kurasi }}
                                             </div>
                                         @endif
                                     </div>
@@ -127,16 +145,16 @@
                         </div>
                     </div>
                 @endif
-                @endhasrole
+                @endhasanyrole
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @forelse($pengumuman as $p)
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group">
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between group">
                         <div>
                             @if($p->gambar_sampul)
                                 <a href="{{ route('informasi.show', $p) }}" class="block aspect-video w-full overflow-hidden bg-slate-100 relative">
                                     <img src="{{ $p->gambar_url }}" alt="{{ $p->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                    <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md bg-white/90 text-slate-800 border border-white/60">
+                                    <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-white/95 text-slate-800 border border-slate-200">
                                         {{ $p->badge_label }}
                                     </span>
                                 </a>
@@ -151,22 +169,22 @@
                                             </span>
                                         @endif
                                         @if($p->tanggal_kegiatan)
-                                            <span class="text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-                                                📅 {{ $p->tanggal_kegiatan->format('d M Y') }}
+                                            <span class="text-[11px] text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+                                                {{ $p->tanggal_kegiatan->format('d M Y') }}
                                             </span>
                                         @endif
                                     </div>
-                                    
+
                                     @if(Auth::check() && (Auth::user()->hasAnyRole(['bem', 'bkhm', 'admin']) || Auth::id() === $p->user_id))
                                     <form action="{{ route('informasi.pengumuman.destroy', $p) }}" method="POST" onsubmit="return confirm('Hapus pengumuman ini?')">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="text-rose-500 hover:text-rose-700 text-xs font-semibold hover:underline">Hapus</button>
+                                        <button type="submit" class="inline-flex items-center min-h-[44px] px-2 text-rose-700 hover:text-rose-900 text-xs font-semibold hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 rounded">Hapus</button>
                                     </form>
                                     @endif
                                 </div>
 
                                 <h3 class="text-lg font-bold text-slate-900 mb-2 leading-snug">
-                                    <a href="{{ route('informasi.show', $p) }}" class="hover:text-indigo-600 transition">
+                                    <a href="{{ route('informasi.show', $p) }}" class="hover:text-indigo-700 transition">
                                         {{ $p->judul }}
                                     </a>
                                 </h3>
@@ -174,28 +192,28 @@
                             </div>
                         </div>
 
-                        <div class="px-6 py-3.5 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                            <span>Oleh: <strong class="text-slate-700 font-medium">{{ $p->user->name ?? 'Kemahasiswaan' }}</strong></span>
-                            
+                        <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+                            <span>Oleh: <strong class="text-slate-800 font-medium">{{ $p->user->name ?? 'Kemahasiswaan' }}</strong></span>
+
                             <div class="flex items-center gap-3">
                                 @if($p->file_lampiran)
-                                <a href="{{ route('informasi.pengumuman.lampiran', $p) }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-medium rounded shadow-2xs transition-colors">
-                                    <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                <a href="{{ route('informasi.pengumuman.lampiran', $p) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center min-h-[44px] gap-1 px-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-medium rounded transition-colors">
+                                    <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                                     <span>Lampiran</span>
                                 </a>
                                 @endif
-                                <a href="{{ route('informasi.show', $p) }}" class="inline-flex items-center gap-1 font-bold text-indigo-600 hover:text-indigo-800 transition">
+                                <a href="{{ route('informasi.show', $p) }}" class="inline-flex items-center min-h-[44px] gap-1 font-bold text-indigo-700 hover:text-indigo-900 transition">
                                     <span>Detail</span>
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                                 </a>
                             </div>
                         </div>
                     </div>
                     @empty
-                    <div class="col-span-2 text-center py-12 bg-white rounded-xl border border-slate-200/80 shadow-sm text-slate-500">
-                        <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                    <div class="col-span-2 text-center py-12 bg-white rounded-xl border border-slate-200 text-slate-600">
+                        <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
                         <p class="font-semibold text-slate-700">Belum ada pengumuman terbaru</p>
-                        <p class="text-xs text-slate-400 mt-1">Pengumuman resmi kemahasiswaan akan ditampilkan di sini.</p>
+                        <p class="text-xs text-slate-500 mt-1">Pengumuman resmi kemahasiswaan akan ditampilkan di sini.</p>
                     </div>
                     @endforelse
                 </div>
@@ -203,7 +221,7 @@
 
             <!-- Tab Content: Regulasi -->
             <div x-show="activeTab === 'regulasi'" style="display: none;" class="space-y-6">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
                     <div class="p-6">
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-200">
@@ -217,18 +235,18 @@
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 text-sm">
                                     @forelse($regulasi as $r)
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <tr class="hover:bg-slate-50 transition-colors">
                                         <td class="py-4 px-4">
                                             <p class="font-bold text-slate-900 leading-tight">{{ $r->judul }}</p>
                                             @if($r->deskripsi)
-                                                <p class="text-xs text-slate-500 mt-1 line-clamp-1">{{ $r->deskripsi }}</p>
+                                                <p class="text-xs text-slate-600 mt-1 line-clamp-1">{{ $r->deskripsi }}</p>
                                             @endif
                                         </td>
                                         <td class="py-4 px-4">
                                             @php
                                                 $badgeColor = match($r->kategori) {
-                                                    'Undang-Undang' => 'bg-purple-100 text-purple-800 border-purple-200',
-                                                    'Pedoman' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                                    'Undang-Undang' => 'bg-indigo-100 text-indigo-800 border-indigo-200',
+                                                    'Pedoman' => 'bg-slate-100 text-slate-800 border-slate-200',
                                                     'Pengumuman' => 'bg-amber-100 text-amber-800 border-amber-200',
                                                     default => 'bg-slate-100 text-slate-800 border-slate-200',
                                                 };
@@ -239,19 +257,19 @@
                                         </td>
                                         <td class="py-4 px-4 text-slate-600">
                                             <span class="font-medium text-slate-800">{{ $r->user->name }}</span>
-                                            <span class="block text-xs text-slate-400 mt-0.5">{{ \Carbon\Carbon::parse($r->created_at)->format('d M Y') }}</span>
+                                            <span class="block text-xs text-slate-500 mt-0.5">{{ \Carbon\Carbon::parse($r->created_at)->format('d M Y') }}</span>
                                         </td>
                                         <td class="py-4 px-4 text-center whitespace-nowrap">
-                                            <a href="{{ route('informasi.regulasi.unduh', $r) }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs rounded-lg transition-colors mr-2">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                            <a href="{{ route('informasi.regulasi.unduh', $r) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center min-h-[44px] gap-1.5 px-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs rounded-lg transition-colors">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                                 <span>Unduh PDF</span>
                                             </a>
-                                            
+
                                             @hasrole('bpm')
                                             @if($r->user_id === Auth::id())
                                             <form action="{{ route('informasi.regulasi.destroy', $r) }}" method="POST" class="inline" onsubmit="return confirm('Hapus regulasi ini?')">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="text-rose-600 hover:text-rose-800 text-xs font-semibold hover:underline">Hapus</button>
+                                                <button type="submit" class="inline-flex items-center min-h-[44px] px-2 text-rose-700 hover:text-rose-900 text-xs font-semibold hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 rounded">Hapus</button>
                                             </form>
                                             @endif
                                             @endhasrole
@@ -259,7 +277,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="4" class="py-10 text-center text-slate-500">
+                                        <td colspan="4" class="py-10 text-center text-slate-600">
                                             <p class="font-medium">Belum ada dokumen regulasi yang diunggah.</p>
                                         </td>
                                     </tr>
@@ -274,37 +292,38 @@
         </div>
 
         <!-- Modal Tambah Pengumuman -->
-        @hasanyrole('bem|bkhm|ormawa|admin')
-        <div x-show="showPengumumanModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        @hasanyrole('bem|bpm|bkhm|ormawa|admin')
+        <div x-show="showPengumumanModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" @keydown.escape.window="showPengumumanModal = false">
             <div class="flex items-center justify-center min-h-screen px-4">
-                <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-xs" @click="showPengumumanModal = false"></div>
-                <div class="relative bg-white w-full max-w-lg p-6 rounded-2xl shadow-2xl border border-slate-200">
+                <div class="fixed inset-0 transition-opacity bg-slate-900/60" @click="showPengumumanModal = false"></div>
+                <div class="relative bg-white w-full max-w-lg p-6 rounded-2xl border border-slate-200">
                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
                         <div>
-                            <h3 class="text-lg font-bold text-slate-900">
+                            <h3 class="text-lg font-bold text-slate-900" id="judul-modal-pengumuman">
                                 @role('bkhm') Terbitkan Pengumuman Resmi Kampus
-                                @elserole('bem') Terbitkan Agenda / Berita BEM
+                                @elserole('bem') Ajukan Berita / Agenda BEM
+                                @elserole('bpm') Ajukan Berita / Warta BPM
                                 @elserole('ormawa') Ajukan Publikasi Berita / Acara Ormawa
                                 @else Buat Pengumuman Baru
                                 @endrole
                             </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">
-                                @role('ormawa')
-                                    Berita yang Anda ajukan akan dikurasi oleh BEM terlebih dahulu sebelum tayang ke publik.
+                            <p class="text-xs text-slate-600 mt-0.5">
+                                @hasanyrole('ormawa|bem|bpm')
+                                    Berita yang Anda ajukan akan dikurasi oleh Humas BKHM terlebih dahulu sebelum tayang ke publik.
                                 @else
-                                    Pengumuman akan langsung dipublikasikan dan dapat diakses mahasiswa.
-                                @endrole
+                                    Pengumuman akan langsung dipublikasikan dan dapat diakses sivitas kampus.
+                                @endhasanyrole
                             </p>
                         </div>
-                        <button @click="showPengumumanModal = false" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                        <button @click="showPengumumanModal = false" aria-label="Tutup" class="inline-flex items-center justify-center w-11 h-11 -mr-2 text-slate-500 hover:text-slate-700 text-2xl font-bold rounded-lg hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">&times;</button>
                     </div>
 
-                    @role('ormawa')
-                    <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-2.5 text-xs text-amber-800">
-                        <svg class="w-4 h-4 text-amber-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>Draf publikasi Anda akan melalui proses kurasi oleh BEM. Pastikan pamflet atau informasi jelas dan tidak melanggar etika kemahasiswaan.</span>
+                    @hasanyrole('ormawa|bem|bpm')
+                    <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-2.5 text-xs text-amber-900">
+                        <svg class="w-4 h-4 text-amber-700 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Draf publikasi Anda akan melalui proses kurasi oleh Humas BKHM ITG. Pastikan pamflet atau informasi jelas dan tidak melanggar etika kemahasiswaan.</span>
                     </div>
-                    @endrole
+                    @endhasanyrole
 
                     <form action="{{ route('informasi.pengumuman.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -319,12 +338,12 @@
                             </div>
                             <div>
                                 <x-input-label for="isi" value="Isi / Deskripsi Lengkap" />
-                                <textarea id="isi" name="isi" rows="4" class="border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-2xs block mt-1 w-full text-sm" placeholder="Rincian isi pengumuman, deskripsi agenda, persyaratan lomba, narasi..." required></textarea>
+                                <textarea id="isi" name="isi" rows="4" class="border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg block mt-1 w-full text-sm" placeholder="Rincian isi pengumuman, deskripsi agenda, persyaratan lomba, narasi..." required></textarea>
                             </div>
                             <div>
                                 <x-input-label for="gambar_sampul" value="Gambar Sampul / Poster Pamflet (Opsional, JPG/PNG/WebP maks 5MB)" />
                                 <input id="gambar_sampul" name="gambar_sampul" type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full border border-slate-300 rounded-lg p-2 text-sm text-slate-600 bg-slate-50" />
-                                <p class="text-[11px] text-slate-400 mt-1">Akan ditampilkan sebagai cover poster pada kartu dan halaman detail.</p>
+                                <p class="text-[11px] text-slate-500 mt-1">Akan ditampilkan sebagai cover poster pada kartu dan halaman detail.</p>
                             </div>
                             <div>
                                 <x-input-label for="file_lampiran" value="Dokumen Panduan / Lampiran PDF (Opsional, maks 5MB)" />
@@ -332,9 +351,9 @@
                             </div>
                         </div>
                         <div class="mt-6 flex justify-end gap-3 pt-3 border-t border-slate-200">
-                            <button type="button" @click="showPengumumanModal = false" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm">Batal</button>
+                            <button type="button" @click="showPengumumanModal = false" class="inline-flex items-center min-h-[44px] px-4 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium text-sm">Batal</button>
                             <x-primary-button>
-                                @role('ormawa') Ajukan ke BEM @else Terbitkan Sekarang @endrole
+                                @hasanyrole('ormawa|bem|bpm') Ajukan ke BKHM @else Terbitkan Sekarang @endhasanyrole
                             </x-primary-button>
                         </div>
                     </form>
@@ -345,13 +364,13 @@
 
         <!-- Modal Tambah Regulasi -->
         @hasrole('bpm')
-        <div x-show="showRegulasiModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div x-show="showRegulasiModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" @keydown.escape.window="showRegulasiModal = false">
             <div class="flex items-center justify-center min-h-screen px-4">
-                <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-xs" @click="showRegulasiModal = false"></div>
-                <div class="relative bg-white w-full max-w-lg p-6 rounded-2xl shadow-2xl border border-slate-200">
+                <div class="fixed inset-0 transition-opacity bg-slate-900/60" @click="showRegulasiModal = false"></div>
+                <div class="relative bg-white w-full max-w-lg p-6 rounded-2xl border border-slate-200">
                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
                         <h3 class="text-lg font-bold text-slate-900">Tambah Regulasi / Pedoman Baru</h3>
-                        <button @click="showRegulasiModal = false" class="text-slate-400 hover:text-slate-600">&times;</button>
+                        <button @click="showRegulasiModal = false" aria-label="Tutup" class="inline-flex items-center justify-center w-11 h-11 -mr-2 text-slate-500 hover:text-slate-700 text-2xl font-bold rounded-lg hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">&times;</button>
                     </div>
                     <form action="{{ route('informasi.regulasi.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -362,7 +381,7 @@
                             </div>
                             <div>
                                 <x-input-label for="kategori_reg" value="Kategori Regulasi" />
-                                <select name="kategori" id="kategori_reg" class="border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-2xs block mt-1 w-full text-sm" required>
+                                <select name="kategori" id="kategori_reg" class="border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg block mt-1 w-full text-sm py-3 px-3.5" required>
                                     <option value="Undang-Undang">Undang-Undang</option>
                                     <option value="Pedoman">Pedoman</option>
                                     <option value="Pengumuman">Pengumuman</option>
@@ -370,7 +389,7 @@
                             </div>
                             <div>
                                 <x-input-label for="deskripsi_reg" value="Deskripsi Singkat" />
-                                <textarea id="deskripsi_reg" name="deskripsi" rows="3" class="border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-2xs block mt-1 w-full text-sm" placeholder="Penjelasan singkat isi regulasi..."></textarea>
+                                <textarea id="deskripsi_reg" name="deskripsi" rows="3" class="border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg block mt-1 w-full text-sm" placeholder="Penjelasan singkat isi regulasi..."></textarea>
                             </div>
                             <div>
                                 <x-input-label for="file_dokumen" value="Dokumen PDF (Maks. 10MB)" />
@@ -378,7 +397,7 @@
                             </div>
                         </div>
                         <div class="mt-6 flex justify-end gap-3 pt-3 border-t border-slate-200">
-                            <button type="button" @click="showRegulasiModal = false" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-sm">Batal</button>
+                            <button type="button" @click="showRegulasiModal = false" class="inline-flex items-center min-h-[44px] px-4 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium text-sm">Batal</button>
                             <x-primary-button>Unggah Dokumen</x-primary-button>
                         </div>
                     </form>
@@ -387,4 +406,4 @@
         </div>
         @endhasrole
     </div>
-</x-app-layout>
+</x-public-layout>

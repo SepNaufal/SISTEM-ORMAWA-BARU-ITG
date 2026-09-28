@@ -21,10 +21,13 @@ class BendaharaController extends Controller
         $request->validate([
             'nominal_cair' => ['required', 'numeric', 'min:1', 'max:' . $maxCair],
             'tanggal_cair' => 'required|date',
-            'catatan' => 'nullable|string'
+            'catatan' => 'nullable|string',
+            'bukti_transfer' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:3072',
         ], [
             'nominal_cair.min' => 'Nominal pencairan minimal Rp 1.',
             'nominal_cair.max' => 'Nominal pencairan tidak boleh melebihi dana diajukan (Rp ' . number_format($pengajuan->dana_diajukan, 0, ',', '.') . ') atau sisa saldo ormawa (Rp ' . number_format($user->saldo, 0, ',', '.') . ').',
+            'bukti_transfer.mimes' => 'Bukti transfer harus berupa dokumen PDF atau gambar (JPG, JPEG, PNG).',
+            'bukti_transfer.max' => 'Ukuran file bukti transfer maksimal 3 MB.',
         ]);
 
         $stateFundsDisbursed = WorkflowState::where('name', 'funds_disbursed')->firstOrFail();
@@ -45,8 +48,15 @@ class BendaharaController extends Controller
             return back()->with('error', 'Pencairan termin berikutnya menunggu evaluasi termin sebelumnya dinyatakan selesai oleh WR3/BKHM.');
         }
 
+        $buktiPath = null;
+        if ($request->hasFile('bukti_transfer')) {
+            $file = $request->file('bukti_transfer');
+            $filename = time() . '_BUKTI_TRANSFER_' . $pengajuan->id . '_' . $terminKe . '.' . $file->getClientOriginalExtension();
+            $buktiPath = $file->storeAs('bukti_transfer', $filename, 'local');
+        }
+
         try {
-            DB::transaction(function () use ($request, $pengajuan, $stateFundsDisbursed, $terminKe) {
+            DB::transaction(function () use ($request, $pengajuan, $stateFundsDisbursed, $terminKe, $buktiPath) {
                 // V1: Kunci baris pengajuan untuk mencegah double-submit / race condition konkurensi
                 $lockedPengajuan = Pengajuan::where('id', $pengajuan->id)->lockForUpdate()->first();
                 if ($lockedPengajuan->workflow_state_id === $stateFundsDisbursed->id || $lockedPengajuan->state->name !== 'to_treasurer') {
@@ -70,6 +80,7 @@ class BendaharaController extends Controller
                     'nominal_cair' => $nominalCair,
                     'tanggal_cair' => $request->tanggal_cair,
                     'catatan' => $request->catatan,
+                    'bukti_transfer' => $buktiPath,
                 ]);
 
                 // V4: Decrement saldo atomik
@@ -109,6 +120,9 @@ class BendaharaController extends Controller
             $pengajuan->user_id,
             'Dana termin ' . $terminKe . ' untuk pengajuan "' . $pengajuan->nama_kegiatan . '" telah dicairkan.'
         );
+
+        // Bubuhkan tanda tangan digital bendahara pada pengesahan pencairan dana
+        \App\Services\DigitalSignatureService::sign($pengajuan->fresh(), Auth::user(), 'bendahara');
 
         return redirect()->route('verifikasi.index')->with('success', 'Dana termin ' . $terminKe . ' berhasil diproses dan dicairkan.');
     }

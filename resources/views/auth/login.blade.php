@@ -1,13 +1,13 @@
 <x-guest-layout>
     <div class="mb-5 text-center">
-        <h2 class="text-xl font-bold text-slate-900">Login Pengurus & Ormawa</h2>
-        <p class="text-xs text-slate-500 mt-1">Portal otentikasi khusus ormawa, verifikator, sarpras, dan pejabat kampus</p>
+        <h2 class="text-xl font-bold text-slate-900">Login Pengurus &amp; Ormawa</h2>
+        <p class="text-xs text-slate-600 mt-1">Portal otentikasi khusus ormawa, verifikator, sarpras, dan pejabat kampus</p>
     </div>
 
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" x-data="{ submitting: false }" @submit="submitting = true">
         @csrf
 
         <!-- Email Akun Resmi -->
@@ -31,30 +31,30 @@
 
         <!-- Remember Me -->
         <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+            <label for="remember_me" class="inline-flex items-center cursor-pointer">
+                <input id="remember_me" type="checkbox" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" name="remember">
+                <span class="ms-2 text-sm text-slate-700">Ingat saya</span>
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-end mt-4 gap-3">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+                <a class="inline-flex items-center min-h-[44px] text-sm text-slate-700 hover:text-slate-900 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 underline" href="{{ route('password.request') }}">
+                    Lupa kata sandi?
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
+            <x-primary-button x-bind:disabled="submitting">
+                <span x-text="submitting ? 'Memproses...' : 'Masuk'">Masuk</span>
             </x-primary-button>
         </div>
     </form>
 
     <div class="mt-6 pt-5 border-t border-slate-200 text-center">
-        <p class="text-xs text-slate-500 mb-2">Mahasiswa umum tidak perlu login untuk menyampaikan aspirasi, konseling BKHM, atau lapor prestasi.</p>
-        <a href="{{ route('layanan.index') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
+        <p class="text-xs text-slate-600 mb-2">Mahasiswa umum tidak perlu login untuk menyampaikan aspirasi, konseling BKHM, atau lapor prestasi.</p>
+        <a href="{{ route('layanan.index') }}" class="inline-flex items-center min-h-[44px] gap-1.5 text-xs font-bold text-indigo-700 hover:text-indigo-900 transition">
             <span>Buka Portal Layanan Mahasiswa (Tanpa Login)</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
     </div>
 </x-guest-layout>

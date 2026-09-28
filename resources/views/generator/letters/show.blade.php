@@ -5,11 +5,15 @@
             <div class="flex justify-between mb-4">
                 <a href="{{ route('generator.letters.create') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Kembali</a>
                 <div class="flex gap-2">
-                    <a href="{{ route('generator.letters.pdf', $letter) }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">⬇️ Unduh PDF</a>
-                    <button onclick="window.print()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">🖨️ Cetak</button>
+                    <a href="{{ route('generator.letters.pdf', $letter) }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Unduh PDF</a>
+                    <button onclick="window.print()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Cetak</button>
                 </div>
             </div>
-            @php $m=$letter->metadata ?? []; $penanda=$m['penandatangan'] ?? 'ketua'; $namaPenanda = $penanda==='sekretaris' ? (Auth::user()->nama_sekretaris ?? Auth::user()->name) : ($penanda==='bendahara' ? (Auth::user()->nama_bendahara ?? Auth::user()->name) : (Auth::user()->nama_ketua ?? Auth::user()->name)); @endphp
+
+            @php
+                $m = $letter->metadata ?? [];
+            @endphp
+
             <div class="bg-white p-10 shadow-lg mx-auto" style="width: 210mm; min-height: 297mm; font-family: 'Times New Roman';">
                 <div style="display: flex; align-items: center; border-bottom: 3px double black; padding-bottom: 10px; margin-bottom: 30px;">
                     <div style="width: 80px; text-align: left;">
@@ -77,13 +81,11 @@
                 @endif
 
                 <div style="margin-top: 50px; text-align: right;">Garut, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</div>
-                <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
-                    <div style="text-align: center; width: 250px;">
-                        <div>{{ ucfirst($penanda) }},</div>
-                        <div style="height: 80px;"></div>
-                        <div style="font-weight: bold; text-decoration: underline;">{{ $namaPenanda }}</div>
-                    </div>
-                </div>
+
+                @include('generator.partials.penandatangan', [
+                    'penandatanganList' => $letter->penandatangan_list,
+                    'signatures' => $letter->signatures_by_index,
+                ])
             </div>
         </div>
     </div>

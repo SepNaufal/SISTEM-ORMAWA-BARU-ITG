@@ -23,7 +23,7 @@
 
     @if($tiket->kategori === 'konseling')
         <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 13px; color: #1e40af;">
-            <strong>Catatan Privasi:</strong> Permohonan konseling Anda ditangani secara tertutup dan rahasia oleh staf BKHM. Anda akan menerima notifikasi jadwal temu atau respons resmi melalui email ini.
+            <strong>Catatan Privasi:</strong> Permohonan konseling Anda ditangani secara tertutup dan rahasia oleh BKHM. Anda akan menerima notifikasi jadwal temu atau respons resmi melalui email ini.
         </div>
     @endif
 

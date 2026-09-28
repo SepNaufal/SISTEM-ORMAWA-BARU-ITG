@@ -74,7 +74,7 @@
                                         @endif
                                     </td>
                                     <td class="py-3 px-4 text-center space-x-2">
-                                        <button @click="showEditModal = true; editUser = {{ json_encode(['id' => $user->id, 'name' => $user->name, 'email' => $user->email, 'username' => $user->username, 'status_akun' => $user->status_akun, 'role' => $user->roles->first()?->name]) }}" class="text-blue-600 hover:text-blue-900 text-sm">Edit</button>
+                                        <button @click="showEditModal = true; editUser = {{ json_encode(['id' => $user->id, 'name' => $user->name, 'email' => $user->email, 'username' => $user->username, 'status_akun' => $user->status_akun, 'role' => $user->roles->first()?->name]) }}" class="text-indigo-600 hover:text-indigo-900 text-sm">Edit</button>
                                         
                                         <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline">
                                             @csrf

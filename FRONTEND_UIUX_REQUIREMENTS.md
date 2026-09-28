@@ -77,7 +77,8 @@ Dokumen ini merupakan acuan resmi (*single source of truth*) bagi Tim Frontend D
 
 ## 3. SPESIFIKASI HALAMAN PUBLIK & MAHASISWA GUEST (TANPA LOGIN)
 
-### 3.1 P-01: Landing Page Utama (`/`)
+### 3.1 P-01: Landing Page Utama (`/`) - DIGABUNG KE P-02 (2026-09-26)
+> Catatan: halaman landing terpisah dihapus. Root `/` kini langsung menyajikan Portal Katalog Layanan Publik (P-02). Tautan Informasi, Showcase Prestasi, Login Pengurus, dan identitas kampus (alamat, kontak) dipindah ke header dan footer shell publik bersama. URL `/layanan` dialihkan (301) ke `/`. Spesifikasi di bawah ini disimpan sebagai riwayat.
 * **Pengguna:** Tamu Publik, Mahasiswa Umum, Pengurus Ormawa, Dosen/Pejabat.
 * **Tujuan:** Gerbang selamat datang resmi kemahasiswaan ITG, memperkenalkan modul layanan, dan memisahkan alur Mahasiswa (Tanpa Login) vs Pengurus (Login).
 * **Komponen & Layout:**
@@ -101,7 +102,7 @@ Dokumen ini merupakan acuan resmi (*single source of truth*) bagi Tim Frontend D
 
 ---
 
-### 3.2 P-02: Portal Katalog Layanan Publik (`/layanan`)
+### 3.2 P-02: Portal Katalog Layanan Publik (`/`)
 * **Pengguna:** Mahasiswa Umum (Guest).
 * **Tujuan:** Memilih kategori layanan kemahasiswaan dan melacak tiket yang dimiliki.
 * **Komponen & Layout:**
@@ -330,7 +331,7 @@ Dokumen ini merupakan acuan resmi (*single source of truth*) bagi Tim Frontend D
     * *Sarpras:* Tempat & Fasilitas (Ajukan & Riwayat), Sarana & Barang (Ajukan & Riwayat).
     * *Persuratan Digital:* Buat Proposal, Buat Surat Lain, Buat LPJ, Arsip Digital.
     * *Laporan:* Arsip LPJ.
-    * *Prestasi & Aspirasi:* Pelaporan Prestasi (`/prestasi`), Aspirasi Saya (`/aspirasi/saya` - khusus ormawa).
+    * *Prestasi & Aspirasi:* Pelaporan Prestasi (`/prestasi`). Aspirasi mahasiswa memakai alur tiket publik di Portal Layanan Mahasiswa (`/layanan/aspirasi`).
   * **Menu Admin:** Manajemen Pengguna, Konfigurasi Sistem, Monitoring Read-Only Seluruh Modul.
 * **Topbar:** Tombol toggle sidebar, judul halaman aktif, profil user login (avatar, nama, role), dan menu dropdown profil / Logout.
 
@@ -457,6 +458,39 @@ Dokumen ini merupakan acuan resmi (*single source of truth*) bagi Tim Frontend D
   * Pratinjau berkas sertifikat atau proposal delegasi.
   * Tombol Switch Toggle: **"Tampilkan ke Showcase Publik"**.
   * Aksi: *Setujui Prestasi* / *Tolak dengan Catatan*.
+
+---
+
+### 5.9 G-01: Modul Generator Surat Resmi & Persuratan Digital Otomatis (`/generator/letters`)
+* **Pengguna:** Ormawa (HIMA/UKM), BEM, BPM.
+* **Tujuan:** Membuat dokumen surat resmi organisasi secara otomatis, terstandardisasi format naskah dinas ITG, dan dibubuhi tanda tangan elektronik kriptografis (QR Code).
+* **Komponen & Alur:**
+  1. **Formulir Generator Surat (`/generator/letters/create`):**
+     * **Pilihan 4 Jenis Surat Resmi:**
+       - *Surat Undangan*: Input kalimat pembuka, nama acara, hari/tanggal, waktu, tempat pelaksanaan.
+       - *Surat Tugas / Mandat*: Input nama petugas, NIM, uraian penugasan, tanggal pelaksanaan.
+       - *Surat Permohonan (Alat/Tempat)*: Input nama alat/tempat, waktu peminjaman/penggunaan, alasan/tujuan peminjaman.
+       - *Surat Keterangan Aktif*: Input nama mahasiswa, NIM, jabatan dalam organisasi, tujuan/keperluan surat.
+     * **Header & Atribut Pokok:** Nomor surat (opsional/manual format ormawa), perihal surat, tujuan/pihak yang dituju.
+     * **Panel Penandatangan Dinamis (Multi-Signer):**
+       - Mendukung penambahan multi-penandatangan dinamis (Ketua, Sekretaris, Bendahara, atau Pihak Luar).
+       - **Penandatangan Internal (dari profil):** Menarik nama dan NIM otomatis dari profil pengurus yang sedang login (`nama_ketua`, `nim_ketua`, `nama_sekretaris`, `nim_sekretaris`, `nama_bendahara`, `nim_bendahara`). Menghasilkan tanda tangan digital sistem.
+       - **Penandatangan Eksternal (Pihak Luar):** Input nama dan jabatan bebas manual; tanda tangan dilakukan manual di luar sistem (tidak menghasilkan rekaman tanda tangan digital).
+  2. **Halaman Pratinjau Surat Resmi (`/generator/letters/{letter}`):**
+     * **Kop Surat Dinas Resmi ITG:** Menampilkan logo ITG, baris nama kementerian, Institut Teknologi Garut, alamat, kontak, dan logo ormawa secara proporsional.
+     * **Struktur Naskah Dinas:** Nomor, perihal, tujuan surat, isi sesuai jenis surat, tanggal titimangsa surat (Garut, D M Y).
+     * **Tabel Blok Penandatangan Proporsional:**
+       - Jabatan penandatangan tebal.
+       - Kotak tanda tangan elektronik setinggi 132px memuat **QR Code Verifikasi Tanda Tangan**.
+       - Keterangan *DITANDATANGANI SECARA ELEKTRONIK*, token unik `SKIN-SIG-YYYY-XXXXXXXXXXXX`, tanggal pengesahan, dan stempel *ASLI & SAH*.
+       - Nama bertanda tangan dengan garis bawah (*underline*).
+       - Nomor identitas tercetak rapi di bawah nama: **NIM. <nomor>** untuk mahasiswa/pengurus atau **NIDN. <nomor>** untuk pejabat/dosen.
+     * **Aksi Dokumen:** Tombol *"Unduh PDF"* (`/generator/letters/{letter}/pdf`), tombol *"Cetak"*, dan tombol *"Kembali"*.
+  3. **Isolasi Otorisasi Hak Akses Dokumen (SEC-06):**
+     * Surat yang dibuat oleh suatu Ormawa hanya dapat dilihat (`showLetter`) dan diunduh PDF-nya (`pdfLetter`) oleh ormawa pemilik dokumen tersebut atau Admin kampus. Akses lintas ormawa dicegah dengan HTTP 403 (*Forbidden*).
+  4. **Verifikasi Publik Tanda Tangan Kriptografis (`/verifikasi/dokumen/{token}`):**
+     * Setiap QR code surat mengarah ke tautan verifikasi publik mandiri tanpa login.
+     * Membuktikan integritas naskah dinas secara matematis via HMAC-SHA256 kanonikal dan menyajikan status *"DOKUMEN RESMI ASLI & SAH"*.
 
 ---
 

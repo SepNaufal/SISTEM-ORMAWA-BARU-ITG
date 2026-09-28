@@ -19,16 +19,22 @@ class Prestasi extends Model
         'tingkat',
         'juara',
         'tanggal',
+        'tanggal_mulai',
+        'tanggal_selesai',
+        'url_penyelenggara',
         'afiliasi',
         'unit_terkait',
         'deskripsi',
         'file_bukti',
+        'foto_penyerahan',
         'status',
         'catatan_bkhm',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
+        'tanggal_mulai' => 'date',
+        'tanggal_selesai' => 'date',
     ];
 
     public const TINGKAT = ['Fakultas', 'Universitas', 'Regional', 'Nasional', 'Internasional'];
@@ -42,5 +48,28 @@ class Prestasi extends Model
     public function scopeTerverifikasi($query)
     {
         return $query->where('status', 'terverifikasi');
+    }
+
+    public function getRentangTanggalAttribute(): string
+    {
+        if ($this->tanggal_mulai && $this->tanggal_selesai) {
+            if ($this->tanggal_mulai->format('Y-m-d') === $this->tanggal_selesai->format('Y-m-d')) {
+                return $this->tanggal_mulai->translatedFormat('d F Y');
+            }
+            if ($this->tanggal_mulai->format('Y-m') === $this->tanggal_selesai->format('Y-m')) {
+                return $this->tanggal_mulai->translatedFormat('d') . ' - ' . $this->tanggal_selesai->translatedFormat('d F Y');
+            }
+            return $this->tanggal_mulai->translatedFormat('d M Y') . ' - ' . $this->tanggal_selesai->translatedFormat('d M Y');
+        }
+
+        if ($this->tanggal_mulai) {
+            return $this->tanggal_mulai->translatedFormat('d F Y');
+        }
+
+        if ($this->tanggal) {
+            return $this->tanggal->translatedFormat('d F Y');
+        }
+
+        return $this->created_at ? $this->created_at->translatedFormat('d F Y') : '-';
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Aspirasi;
 use App\Models\Notifikasi;
 use App\Models\Prestasi;
 use App\Models\User;
@@ -68,27 +67,6 @@ class Phase3Test extends TestCase
         $response->assertRedirect();
         $this->assertEquals('terverifikasi', $prestasi->fresh()->status);
         $this->assertTrue(Notifikasi::where('user_id', $mahasiswa->id)->exists());
-    }
-
-    /** FR-015/016: aspirasi menyimpan identitas & tanda anonim; pengirim dapat melacak. */
-    public function test_aspirasi_tracks_status_and_keeps_identity(): void
-    {
-        $mahasiswa = User::factory()->create();
-        $mahasiswa->assignRole('mahasiswa');
-
-        $this->actingAs($mahasiswa)->post(route('aspirasi.store'), [
-            'judul' => 'Fasilitas Aula',
-            'isi' => 'Mohon perbaikan ventilasi.',
-            'kategori' => 'Fasilitas',
-            'anonim' => 1,
-        ]);
-
-        $aspirasi = Aspirasi::latest()->first();
-        // Identitas tetap disimpan walau anonim.
-        $this->assertEquals($mahasiswa->id, $aspirasi->user_id);
-        $this->assertTrue($aspirasi->anonim);
-
-        $this->actingAs($mahasiswa)->get(route('aspirasi.mine'))->assertOk();
     }
 
     /** FR-025: NotifikasiService membuat notifikasi in-app. */

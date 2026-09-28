@@ -65,6 +65,9 @@ class Pengumuman extends Model
         if ($this->user && $this->user->hasRole('bem')) {
             return 'BEM ITG';
         }
+        if ($this->user && $this->user->hasRole('bpm')) {
+            return 'BPM ITG';
+        }
         if ($this->user && $this->user->hasRole('ormawa')) {
             return $this->user->name;
         }
@@ -74,10 +77,13 @@ class Pengumuman extends Model
     public function getBadgeColorAttribute(): string
     {
         if ($this->user && $this->user->hasRole('bkhm')) {
-            return 'bg-blue-100 text-blue-800 border-blue-200';
+            return 'bg-indigo-100 text-indigo-800 border-indigo-200';
         }
         if ($this->user && $this->user->hasRole('bem')) {
-            return 'bg-indigo-100 text-indigo-800 border-indigo-200';
+            return 'bg-slate-100 text-slate-700 border-slate-200';
+        }
+        if ($this->user && $this->user->hasRole('bpm')) {
+            return 'bg-amber-100 text-amber-800 border-amber-200';
         }
         return 'bg-emerald-100 text-emerald-800 border-emerald-200';
     }
@@ -86,8 +92,8 @@ class Pengumuman extends Model
     {
         return match ($this->status) {
             'published' => 'Telah Terbit',
-            'pending_kurasi' => 'Menunggu Kurasi BEM',
-            'ditolak' => 'Ditolak BEM',
+            'pending_kurasi' => 'Menunggu Kurasi BKHM',
+            'ditolak' => 'Perlu Revisi BKHM',
             default => ucfirst($this->status),
         };
     }

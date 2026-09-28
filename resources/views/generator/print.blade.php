@@ -89,24 +89,6 @@
         .no-border, .no-border tr, .no-border td { border: none !important; }
         .text-center { text-align: center; }
         .text-right { text-align: right; }
-        .ttd-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 50px;
-        }
-        .ttd-box {
-            text-align: center;
-            width: 200px;
-        }
-        .ttd-img {
-            height: 80px;
-            object-fit: contain;
-            margin: 5px 0;
-        }
-        .ttd-name {
-            font-weight: bold;
-            text-decoration: underline;
-        }
         
         /* Print styles */
         @media print {
@@ -121,7 +103,7 @@
     @if(!($pdf ?? false))
     <div class="no-print" style="text-align:center; margin-bottom:20px; background:#fff; padding:15px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
         <button onclick="window.print()" style="padding:10px 20px; cursor:pointer; background:#4f46e5; color:white; border:none; border-radius:5px; font-weight:bold;">
-            🖨️ Cetak / Simpan PDF
+            Cetak / Simpan PDF
         </button>
         <a href="{{ route('generator.index') }}" style="text-decoration:none; margin-left:10px; color:#666; font-size:14px;">Kembali ke Daftar</a>
         <p style="margin-top:10px; font-size:13px; color:#666; font-family:sans-serif;">Tekan Ctrl+P. Atur margin ke Default dan centang Background graphics.</p>
@@ -230,32 +212,14 @@
             <p style="white-space: pre-wrap; text-align: justify;">{{ $proposal->penutup }}</p>
         </div>
 
-        <!-- TANDA TANGAN - Image Only MVP -->
+        <!-- TANDA TANGAN -->
         <div style="margin-top: 40px; text-align: right;">
             Garut, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
         </div>
-        <div class="ttd-container">
-            <div class="ttd-box">
-                <div style="font-weight:bold;">Ketua Pelaksana</div>
-                @if($proposal->ttd_1_file)
-                    <img src="{{ asset('storage/' . $proposal->ttd_1_file) }}" class="ttd-img" alt="TTD">
-                @else
-                    <div style="height: 80px;"></div>
-                @endif
-                <div class="ttd-name">{{ $proposal->ttd_1_nama ?? '..........................' }}</div>
-                <div style="font-size:10pt;">NIM. {{ $proposal->ttd_1_nim ?? '....................' }}</div>
-            </div>
-            <div class="ttd-box">
-                <div style="font-weight:bold;">Sekretaris</div>
-                @if($proposal->ttd_2_file)
-                    <img src="{{ asset('storage/' . $proposal->ttd_2_file) }}" class="ttd-img" alt="TTD">
-                @else
-                    <div style="height: 80px;"></div>
-                @endif
-                <div class="ttd-name">{{ $proposal->ttd_2_nama ?? '..........................' }}</div>
-                <div style="font-size:10pt;">NIM. {{ $proposal->ttd_2_nim ?? '....................' }}</div>
-            </div>
-        </div>
+        @include('generator.partials.penandatangan', [
+            'penandatanganList' => $proposal->penandatangan_list,
+            'signatures' => $proposal->signatures_by_index,
+        ])
     </div>
 
 </body>

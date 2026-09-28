@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class PeminjamanTempat extends Model
 {
@@ -36,5 +37,10 @@ class PeminjamanTempat extends Model
     public function ruangan(): BelongsTo
     {
         return $this->belongsTo(MasterRuangan::class, 'ruangan_id');
+    }
+
+    public function tandaTanganDigitals(): MorphMany
+    {
+        return $this->morphMany(TandaTanganDigital::class, 'signable')->latest();
     }
 }

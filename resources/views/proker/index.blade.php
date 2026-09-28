@@ -56,7 +56,7 @@
                                     @if($proker->status == 'rencana')
                                         <span class="px-2 py-1 bg-gray-200 text-gray-800 rounded-full text-xs">Rencana</span>
                                     @elseif($proker->status == 'proses')
-                                        <span class="px-2 py-1 bg-blue-200 text-blue-800 rounded-full text-xs">Proses</span>
+                                        <span class="px-2 py-1 bg-indigo-200 text-indigo-800 rounded-full text-xs">Proses</span>
                                     @elseif($proker->status == 'terlaksana')
                                         <span class="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs">Terlaksana</span>
                                     @else
@@ -69,14 +69,14 @@
                                     <form action="{{ route('proker.update', $proker) }}" method="POST" class="inline-flex items-center gap-2">
                                         @csrf
                                         @method('PUT')
-                                        <select name="status" class="text-xs border-gray-300 rounded">
+                                        <select name="status" class="text-xs border-gray-300 rounded min-h-[44px] py-2">
                                             <option value="rencana" {{ $proker->status == 'rencana' ? 'selected' : '' }}>Rencana</option>
                                             <option value="proses" {{ $proker->status == 'proses' ? 'selected' : '' }}>Proses</option>
                                             <option value="terlaksana" {{ $proker->status == 'terlaksana' ? 'selected' : '' }}>Terlaksana</option>
                                             <option value="kendala" {{ $proker->status == 'kendala' ? 'selected' : '' }}>Kendala</option>
                                         </select>
-                                        <input type="text" name="catatan_bpm" placeholder="Catatan..." value="{{ $proker->catatan_bpm }}" class="text-xs border-gray-300 rounded w-28">
-                                        <button type="submit" class="px-2 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700">Simpan</button>
+                                        <input type="text" name="catatan_bpm" placeholder="Catatan..." value="{{ $proker->catatan_bpm }}" class="text-xs border-gray-300 rounded w-28 min-h-[44px] py-2">
+                                        <button type="submit" class="inline-flex items-center justify-center min-h-[44px] px-3 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700">Simpan</button>
                                     </form>
                                 </td>
                                 @endhasanyrole

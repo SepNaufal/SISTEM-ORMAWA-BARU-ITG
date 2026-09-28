@@ -37,11 +37,15 @@ class TiketLayanan extends Model
         'konfirmasi_at',
         'nama_kegiatan',
         'penyelenggara',
+        'url_penyelenggara',
         'tingkat',
         'capaian',
         'tanggal_kegiatan',
+        'tanggal_mulai',
+        'tanggal_selesai',
         'estimasi_biaya',
         'lampiran_bukti',
+        'foto_penyerahan',
         'tampil_ke_publik',
         'status',
     ];
@@ -50,6 +54,8 @@ class TiketLayanan extends Model
         'jadwal_temu' => 'datetime',
         'konfirmasi_at' => 'datetime',
         'tanggal_kegiatan' => 'date',
+        'tanggal_mulai' => 'date',
+        'tanggal_selesai' => 'date',
         'diteruskan_ke_bkhm_at' => 'datetime',
         'tampil_ke_publik' => 'boolean',
         'estimasi_biaya' => 'decimal:2',
@@ -59,23 +65,25 @@ class TiketLayanan extends Model
     ];
 
     /**
-     * Generate Kode Tiket unik format seragam: SKIN-TKT-YYYY-XXXX
+     * Generate Kode Tiket unik format berkeamanan tinggi (High-Entropy Non-Sequential): SKIN-TKT-YYYY-XXXXXX
+     * Menggunakan karakter alfanumerik kapital non-ambigu untuk mencegah brute-force/enumerasi.
      */
     public static function generateKodeTiket(): string
     {
         $year = date('Y');
         $prefix = "SKIN-TKT-{$year}-";
+        // Karakter non-ambigu (tanpa 0, O, 1, I)
+        $charset = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
 
-        $last = self::where('kode_tiket', 'like', "{$prefix}%")
-            ->orderByDesc('id')
-            ->first();
+        do {
+            $randomSuffix = '';
+            for ($i = 0; $i < 6; $i++) {
+                $randomSuffix .= $charset[random_int(0, strlen($charset) - 1)];
+            }
+            $kode = $prefix . $randomSuffix;
+        } while (self::where('kode_tiket', $kode)->exists());
 
-        if (! $last) {
-            return $prefix . '0001';
-        }
-
-        $lastNum = (int) substr($last->kode_tiket, -4);
-        return $prefix . str_pad((string) ($lastNum + 1), 4, '0', STR_PAD_LEFT);
+        return $kode;
     }
 
     /**
@@ -106,7 +114,7 @@ class TiketLayanan extends Model
     {
         return match ($this->status) {
             'pending' => 'bg-yellow-100 text-yellow-800 border-yellow-300',
-            'direkap_bpm', 'ditinjau_bkhm', 'diverifikasi_bkhm', 'diproses_bkhm' => 'bg-blue-100 text-blue-800 border-blue-300',
+            'direkap_bpm', 'ditinjau_bkhm', 'diverifikasi_bkhm', 'diproses_bkhm' => 'bg-slate-100 text-slate-700 border-slate-300',
             'diteruskan_ke_bkhm' => 'bg-purple-100 text-purple-800 border-purple-300',
             'jadwal_ditentukan' => 'bg-indigo-100 text-indigo-800 border-indigo-300',
             'disetujui', 'ditindaklanjuti', 'selesai' => 'bg-green-100 text-green-800 border-green-300',
@@ -121,5 +129,31 @@ class TiketLayanan extends Model
     public function getTanggapanResmiAttribute(): ?string
     {
         return $this->tanggapan_bkhm ?: ($this->catatan_bkhm ?: $this->catatan_bpm);
+    }
+
+    /**
+     * Format rentang waktu pelaksanaan kegiatan untuk pelaporan Dikti & tampilan publik
+     */
+    public function getRentangTanggalAttribute(): string
+    {
+        if ($this->tanggal_mulai && $this->tanggal_selesai) {
+            if ($this->tanggal_mulai->format('Y-m-d') === $this->tanggal_selesai->format('Y-m-d')) {
+                return $this->tanggal_mulai->translatedFormat('d F Y');
+            }
+            if ($this->tanggal_mulai->format('Y-m') === $this->tanggal_selesai->format('Y-m')) {
+                return $this->tanggal_mulai->translatedFormat('d') . ' - ' . $this->tanggal_selesai->translatedFormat('d F Y');
+            }
+            return $this->tanggal_mulai->translatedFormat('d M Y') . ' - ' . $this->tanggal_selesai->translatedFormat('d M Y');
+        }
+
+        if ($this->tanggal_mulai) {
+            return $this->tanggal_mulai->translatedFormat('d F Y');
+        }
+
+        if ($this->tanggal_kegiatan) {
+            return $this->tanggal_kegiatan->translatedFormat('d F Y');
+        }
+
+        return $this->created_at ? $this->created_at->translatedFormat('d F Y') : '-';
     }
 }

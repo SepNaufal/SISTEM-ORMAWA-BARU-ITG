@@ -51,6 +51,24 @@ class DocumentController extends Controller
         return $this->serve($peminjaman->file_persetujuan_prodi, 'surat-prodi-barang-' . $peminjaman->id . '.pdf');
     }
 
+    /**
+     * Menyajikan file bukti transfer pencairan dana secara privat (SEC-01).
+     */
+    public function buktiTransfer(\App\Models\Dana $dana): StreamedResponse
+    {
+        $user = Auth::user();
+        $pengajuan = $dana->pengajuan;
+        abort_unless(
+            $user->id === $pengajuan->user_id || $user->hasAnyRole(['bendahara', 'bkhm', 'wr3', 'bpm', 'admin']),
+            403,
+            'Aksi tidak diizinkan.'
+        );
+
+        $ext = pathinfo($dana->bukti_transfer, PATHINFO_EXTENSION) ?: 'pdf';
+        $filename = 'bukti-transfer-' . $pengajuan->id . '-termin-' . $dana->termin_ke . '.' . $ext;
+        return $this->serve($dana->bukti_transfer, $filename);
+    }
+
     private function serve(?string $path, string $downloadName): StreamedResponse
     {
         abort_if(! $path, 404, 'Dokumen tidak ditemukan.');
@@ -59,7 +77,10 @@ class DocumentController extends Controller
         // yang belum dimigrasikan (jalankan: php artisan dokumen:migrate-private).
         foreach (['local', 'public'] as $disk) {
             if (Storage::disk($disk)->exists($path)) {
-                return Storage::disk($disk)->download($path, $downloadName);
+                $mimeType = Storage::disk($disk)->mimeType($path) ?: 'application/octet-stream';
+                return Storage::disk($disk)->response($path, $downloadName, [
+                    'Content-Type' => $mimeType,
+                ], 'inline');
             }
         }
 
@@ -84,6 +105,6 @@ class DocumentController extends Controller
             default => [],
         };
 
-        abort_unless(in_array($role, $allowed, true), 403, 'Aksi tidak diizinkan.');
+        abort_unless($user->hasAnyRole($allowed), 403, 'Aksi tidak diizinkan.');
     }
 }

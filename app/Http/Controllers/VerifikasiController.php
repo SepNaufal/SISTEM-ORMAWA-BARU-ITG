@@ -47,7 +47,7 @@ class VerifikasiController extends Controller
     {
         $userRole = Auth::user()->roles->first()->name;
         
-        $pengajuan->load(['user', 'state', 'histori.user', 'histori.state', 'programKerja']);
+        $pengajuan->load(['user', 'state', 'histori.user', 'histori.state', 'programKerja', 'komunikasi.user', 'tandaTanganDigitals']);
 
         if ($userRole === 'admin') {
             $availableTransitions = collect();
@@ -151,6 +151,39 @@ class VerifikasiController extends Controller
             $pengajuan->user_id,
             'Pengajuan "' . $pengajuan->nama_kegiatan . '" kini berstatus: ' . $transition->toState->label . '.'
         );
+
+        // FR-022: beri tahu verifikator tahap berikutnya bahwa pengajuan masuk ke antrean mereka
+        if (! $isRejecting) {
+            // Bubuhkan tanda tangan digital otentik pejabat verifikator
+            \App\Services\DigitalSignatureService::sign($pengajuan->fresh(), Auth::user(), $userRole);
+
+            $nextRole = match ($transition->toState->name) {
+                'bem_approved' => 'bpm',
+                'bpm_approved' => 'bkhm',
+                'bkhm_approved' => 'wr3',
+                'wr3_approved' => 'bkhm',
+                'to_treasurer' => 'bendahara',
+                'lpj_wr3_review' => 'wr3',
+                'completed' => 'bkhm',
+                default => null,
+            };
+
+            if ($nextRole) {
+                $nextRoleLabel = match ($nextRole) {
+                    'bem' => 'BEM',
+                    'bpm' => 'BPM',
+                    'bkhm' => 'BKHM',
+                    'wr3' => 'Wakil Rektor III',
+                    'bendahara' => 'Bendahara',
+                    default => strtoupper($nextRole),
+                };
+
+                \App\Services\NotifikasiService::kirimKeRole(
+                    $nextRole,
+                    'Pengajuan "' . $pengajuan->nama_kegiatan . '" telah diproses oleh ' . strtoupper($userRole) . ' dan kini masuk ke antrean ' . $nextRoleLabel . '.'
+                );
+            }
+        }
 
         // FR-022 §22 no.9: penolakan oleh lembaga juga diberitahukan ke akun BEM.
         if ($isRejecting && $pengajuan->user && $pengajuan->user->hasRole('ormawa')) {

@@ -51,7 +51,7 @@ class DetailBeritaDanGambarTest extends TestCase
         $this->assertNotNull($pengumuman->gambar_url);
     }
 
-    public function test_bem_can_view_curation_queue_with_image_and_approve_it(): void
+    public function test_bkhm_can_view_curation_queue_with_image_and_approve_it(): void
     {
         $ormawa = User::factory()->create(['name' => 'UKM Robotika']);
         $ormawa->assignRole('ormawa');
@@ -67,19 +67,19 @@ class DetailBeritaDanGambarTest extends TestCase
             'gambar_sampul' => $path,
         ]);
 
-        $bem = User::factory()->create(['name' => 'BEM ITG']);
-        $bem->assignRole('bem');
+        $bkhm = User::factory()->create(['name' => 'BKHM ITG']);
+        $bkhm->assignRole('bkhm');
 
-        $curationResponse = $this->actingAs($bem)->get(route('bem.kurasi.index'));
+        $curationResponse = $this->actingAs($bkhm)->get(route('bkhm.kurasi.index'));
         $curationResponse->assertStatus(200);
         $curationResponse->assertSee('Lomba Desain Robot 2026');
         $curationResponse->assertSee($pengumuman->gambar_url);
 
-        $approveResponse = $this->actingAs($bem)->post(route('bem.kurasi.approve', $pengumuman));
-        $approveResponse->assertRedirect(route('bem.kurasi.index'));
+        $approveResponse = $this->actingAs($bkhm)->post(route('bkhm.kurasi.approve', $pengumuman));
+        $approveResponse->assertRedirect(route('bkhm.kurasi.index'));
 
         $this->assertEquals('published', $pengumuman->fresh()->status);
-        $this->assertEquals($bem->id, $pengumuman->fresh()->disetujui_oleh_id);
+        $this->assertEquals($bkhm->id, $pengumuman->fresh()->disetujui_oleh_id);
     }
 
     public function test_public_guest_can_view_published_news_detail(): void

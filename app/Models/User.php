@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'username', 'status_akun', 'saldo', 'saldo_awal', 'foto_profil', 'logo_ormawa', 'nama_ketua', 'nama_sekretaris', 'nama_bendahara', 'ttd_ketua', 'ttd_sekretaris', 'ttd_bendahara', 'alamat', 'telepon'])]
+#[Fillable(['name', 'email', 'password', 'username', 'status_akun', 'saldo', 'saldo_awal', 'foto_profil', 'logo_ormawa', 'nama_ketua', 'nim_ketua', 'nama_sekretaris', 'nim_sekretaris', 'nama_bendahara', 'nim_bendahara', 'ttd_ketua', 'ttd_sekretaris', 'ttd_bendahara', 'alamat', 'telepon'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -58,5 +58,10 @@ class User extends Authenticatable
     public function isHima(): bool
     {
         return $this->hasRole('ormawa') && str_contains(strtoupper($this->name ?? ''), 'HIMA');
+    }
+
+    public function suratPeringatans()
+    {
+        return $this->hasMany(SuratPeringatan::class, 'target_user_id');
     }
 }

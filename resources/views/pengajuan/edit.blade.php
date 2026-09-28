@@ -76,7 +76,10 @@
                         <!-- Dana Diajukan -->
                         <div class="mb-4">
                             <x-input-label for="dana_diajukan" :value="__('Dana Diajukan (Rp)')" />
-                            <x-text-input id="dana_diajukan" class="block mt-1 w-full" type="number" name="dana_diajukan" :value="old('dana_diajukan', $pengajuan->dana_diajukan)" required min="0" />
+                            <x-text-input id="dana_diajukan" class="block mt-1 w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" type="number" name="dana_diajukan" :value="old('dana_diajukan', $pengajuan->dana_diajukan)" required min="0" onwheel="this.blur()" oninput="document.getElementById('dana_diajukan_preview').innerText = this.value ? 'Terbilang: Rp ' + new Intl.NumberFormat('id-ID').format(this.value) : ''" />
+                            <p id="dana_diajukan_preview" class="text-xs text-indigo-600 mt-1 font-semibold">
+                                Terbilang: Rp {{ number_format(old('dana_diajukan', $pengajuan->dana_diajukan), 0, ',', '.') }}
+                            </p>
                             <x-input-error :messages="$errors->get('dana_diajukan')" class="mt-2" />
                         </div>
 

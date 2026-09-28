@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PasswordChangedMail;
+use App\Models\PasswordResetLog;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
@@ -49,6 +52,18 @@ class NewPasswordController extends Controller
                 ])->save();
 
                 event(new PasswordReset($user));
+
+                PasswordResetLog::create([
+                    'user_id' => $user->id,
+                    'actor_id' => $user->id,
+                    'actor_role' => 'self',
+                    'ip_address' => $request->ip(),
+                ]);
+
+                try {
+                    Mail::to($user->email)->send(new PasswordChangedMail($user, 'permintaan Anda sendiri'));
+                } catch (\Throwable $e) {
+                }
             }
         );
 

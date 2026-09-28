@@ -73,6 +73,84 @@
                             </div>
                         </div>
 
+                        <!-- Bagian Pejabat Penandatangan Resmi Kampus -->
+                        <div class="mt-8 pt-6 border-t border-gray-200">
+                            <div class="mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">Pejabat Penandatangan Resmi Kampus</h3>
+                                <p class="text-xs text-gray-500">Identitas pejabat yang digunakan secara otomatis pada persuratan, pengesahan LPJ, Surat Peringatan (SP), dan rekomendasi resmi.</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Wakil Rektor III -->
+                                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                                    <h4 class="font-bold text-sm text-indigo-900 flex items-center gap-1.5">
+                                        <span>Wakil Rektor III (Bidang Kemahasiswaan)</span>
+                                    </h4>
+
+                                    <div>
+                                        <x-input-label for="wr3_nama" value="Nama Lengkap & Gelar WR3" />
+                                        <x-text-input id="wr3_nama" name="wr3_nama" type="text" class="mt-1 block w-full text-sm" value="{{ $konfigurasis['wr3_nama'] ?? 'Pejabat Wakil Rektor III' }}" />
+                                    </div>
+
+                                    <div>
+                                        <x-input-label for="wr3_nidn" value="NIDN WR3" />
+                                        <x-text-input id="wr3_nidn" name="wr3_nidn" type="text" class="mt-1 block w-full text-sm font-mono" value="{{ $konfigurasis['wr3_nidn'] ?? '-' }}" />
+                                    </div>
+
+                                    <div>
+                                        <x-input-label for="wr3_jabatan" value="Nama Jabatan Resmi WR3" />
+                                        <x-text-input id="wr3_jabatan" name="wr3_jabatan" type="text" class="mt-1 block w-full text-sm" value="{{ $konfigurasis['wr3_jabatan'] ?? 'Wakil Rektor III Bidang Kemahasiswaan dan Kerjasama' }}" />
+                                    </div>
+                                </div>
+
+                                <!-- Kepala BKHM -->
+                                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                                    <h4 class="font-bold text-sm text-indigo-900 flex items-center gap-1.5">
+                                        <span>Kepala BKHM (Biro Kemahasiswaan & Hubungan Masyarakat)</span>
+                                    </h4>
+
+                                    <div>
+                                        <x-input-label for="bkhm_nama" value="Nama Lengkap & Gelar Kepala BKHM" />
+                                        <x-text-input id="bkhm_nama" name="bkhm_nama" type="text" class="mt-1 block w-full text-sm" value="{{ $konfigurasis['bkhm_nama'] ?? 'Pejabat Kepala BKHM' }}" />
+                                    </div>
+
+                                    <div>
+                                        <x-input-label for="bkhm_nidn" value="NIDN Kepala BKHM" />
+                                        <x-text-input id="bkhm_nidn" name="bkhm_nidn" type="text" class="mt-1 block w-full text-sm font-mono" value="{{ $konfigurasis['bkhm_nidn'] ?? '-' }}" />
+                                    </div>
+
+                                    <div>
+                                        <x-input-label for="bkhm_jabatan" value="Nama Jabatan Resmi Kepala BKHM" />
+                                        <x-text-input id="bkhm_jabatan" name="bkhm_jabatan" type="text" class="mt-1 block w-full text-sm" value="{{ $konfigurasis['bkhm_jabatan'] ?? 'Kepala Biro Kemahasiswaan dan Hubungan Masyarakat (BKHM)' }}" />
+                                    </div>
+                                </div>
+
+                                <!-- Bendahara Kampus ITG -->
+                                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3 md:col-span-2">
+                                    <h4 class="font-bold text-sm text-indigo-900 flex items-center gap-1.5">
+                                        <span>Bendahara Kampus ITG</span>
+                                    </h4>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <x-input-label for="bendahara_nama" value="Nama Lengkap & Gelar Bendahara" />
+                                            <x-text-input id="bendahara_nama" name="bendahara_nama" type="text" class="mt-1 block w-full text-sm" value="{{ $konfigurasis['bendahara_nama'] ?? 'Bendahara Kampus ITG' }}" />
+                                        </div>
+
+                                        <div>
+                                            <x-input-label for="bendahara_nidn" value="NIDN Bendahara" />
+                                            <x-text-input id="bendahara_nidn" name="bendahara_nidn" type="text" class="mt-1 block w-full text-sm font-mono" value="{{ $konfigurasis['bendahara_nidn'] ?? '-' }}" />
+                                        </div>
+
+                                        <div>
+                                            <x-input-label for="bendahara_jabatan" value="Nama Jabatan Resmi Bendahara" />
+                                            <x-text-input id="bendahara_jabatan" name="bendahara_jabatan" type="text" class="mt-1 block w-full text-sm" value="{{ $konfigurasis['bendahara_jabatan'] ?? 'Bendahara Kampus ITG' }}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="flex items-center justify-end mt-8 border-t pt-4">
                             <x-primary-button>
                                 {{ __('Simpan Pengaturan') }}

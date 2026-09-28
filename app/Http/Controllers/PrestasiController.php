@@ -34,19 +34,34 @@ class PrestasiController extends Controller
         $validated = $request->validate([
             'nama_kegiatan' => 'required|string|max:255',
             'penyelenggara' => 'nullable|string|max:255',
+            'url_penyelenggara' => 'nullable|url|max:500',
             'tingkat' => 'required|in:' . implode(',', Prestasi::TINGKAT),
             'juara' => 'nullable|string|max:100',
             'tanggal' => 'nullable|date',
+            'tanggal_mulai' => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'afiliasi' => 'required|in:' . implode(',', Prestasi::AFILIASI),
             'unit_terkait' => 'nullable|string|max:255',
             'deskripsi' => 'nullable|string',
             'file_bukti' => 'required|file|mimes:pdf,jpg,jpeg,png|mimetypes:application/pdf,image/jpeg,image/png|max:5120',
+            'foto_penyerahan' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
         ]);
+
+        $tanggalMulai = $validated['tanggal_mulai'] ?? ($validated['tanggal'] ?? null);
+        $tanggalSelesai = $validated['tanggal_selesai'] ?? $tanggalMulai;
+        $validated['tanggal'] = $tanggalMulai;
+        $validated['tanggal_mulai'] = $tanggalMulai;
+        $validated['tanggal_selesai'] = $tanggalSelesai;
 
         // FR-020/SEC-01: bukti prestasi disimpan di disk privat.
         $file = $request->file('file_bukti');
         $filename = time() . '_' . \Illuminate\Support\Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
         $validated['file_bukti'] = $file->storeAs('prestasi', $filename, 'local');
+
+        if ($request->hasFile('foto_penyerahan')) {
+            $validated['foto_penyerahan'] = $request->file('foto_penyerahan')->store('prestasi-foto', 'public');
+        }
+
         $validated['user_id'] = Auth::id();
         $validated['status'] = 'pending';
 

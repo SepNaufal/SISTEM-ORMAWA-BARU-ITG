@@ -13,12 +13,15 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $defaultAlamat = 'Jl. Mayor Syamsu No.1, Jayaraga, Kec. Tarogong Kidul, Kabupaten Garut, Jawa Barat 44151';
+
         $users = [
             [
                 'name' => 'Administrator Sistem',
                 'username' => 'admin',
                 'email' => 'admin@test.com',
                 'password' => Hash::make('password'),
+                'alamat' => $defaultAlamat,
                 'role' => 'admin'
             ],
             [
@@ -28,6 +31,9 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'saldo' => 10000000,
                 'saldo_awal' => 10000000,
+                'foto_profil' => 'profil/logo_bem.png',
+                'logo_ormawa' => 'profil/logo_bem.png',
+                'alamat' => $defaultAlamat,
                 'role' => 'bem'
             ],
             [
@@ -37,6 +43,9 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'saldo' => 10000000,
                 'saldo_awal' => 10000000,
+                'foto_profil' => 'profil/logo_bpm.png',
+                'logo_ormawa' => 'profil/logo_bpm.png',
+                'alamat' => $defaultAlamat,
                 'role' => 'bpm'
             ],
             [
@@ -44,6 +53,7 @@ class UserSeeder extends Seeder
                 'username' => 'bkhm',
                 'email' => 'bkhm@test.com',
                 'password' => Hash::make('password'),
+                'alamat' => $defaultAlamat,
                 'role' => 'bkhm'
             ],
             [
@@ -51,6 +61,9 @@ class UserSeeder extends Seeder
                 'username' => 'wr3',
                 'email' => 'wr3@test.com',
                 'password' => Hash::make('password'),
+                'foto_profil' => 'profil/logo_itg.png',
+                'logo_ormawa' => 'profil/logo_itg.png',
+                'alamat' => $defaultAlamat,
                 'role' => 'wr3'
             ],
             [
@@ -58,6 +71,9 @@ class UserSeeder extends Seeder
                 'username' => 'bendahara',
                 'email' => 'bendahara@test.com',
                 'password' => Hash::make('password'),
+                'foto_profil' => 'profil/logo_itg.png',
+                'logo_ormawa' => 'profil/logo_itg.png',
+                'alamat' => $defaultAlamat,
                 'role' => 'bendahara'
             ],
             [
@@ -65,6 +81,7 @@ class UserSeeder extends Seeder
                 'username' => 'sarpras',
                 'email' => 'sarpras@test.com',
                 'password' => Hash::make('password'),
+                'alamat' => $defaultAlamat,
                 'role' => 'sarpras'
             ],
             [
@@ -74,6 +91,9 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'saldo' => 10000000,
                 'saldo_awal' => 10000000,
+                'foto_profil' => 'profil/logo_himatif.png',
+                'logo_ormawa' => 'profil/logo_himatif.png',
+                'alamat' => $defaultAlamat,
                 'role' => 'ormawa'
             ],
             [
@@ -83,9 +103,24 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'saldo' => 10000000,
                 'saldo_awal' => 10000000,
+                'alamat' => $defaultAlamat,
                 'role' => 'ormawa'
             ],
         ];
+
+        // Pastikan direktori profil pada storage publik tersedia dan logo default tersalin
+        $profilStorageDir = storage_path('app/public/profil');
+        if (!\Illuminate\Support\Facades\File::isDirectory($profilStorageDir)) {
+            \Illuminate\Support\Facades\File::makeDirectory($profilStorageDir, 0755, true);
+        }
+
+        foreach (['logo_himatif.png', 'logo_bem.png', 'logo_bpm.png', 'logo_itg.png'] as $logo) {
+            $source = public_path('images/logos/' . $logo);
+            $destination = $profilStorageDir . '/' . $logo;
+            if (\Illuminate\Support\Facades\File::exists($source) && !\Illuminate\Support\Facades\File::exists($destination)) {
+                \Illuminate\Support\Facades\File::copy($source, $destination);
+            }
+        }
 
         foreach ($users as $userData) {
             $role = $userData['role'];

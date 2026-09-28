@@ -14,7 +14,7 @@
         @method('patch')
 
         <div>
-            <x-input-label for="alamat" :value="__('Alamat Sekretariat')" />
+            <x-input-label for="alamat" :value="in_array($user->roles->first()?->name, ['ormawa', 'bem', 'bpm']) ? __('Alamat Sekretariat') : __('Alamat')" />
             <x-text-input id="alamat" name="alamat" type="text" class="mt-1 block w-full" :value="old('alamat', $user->alamat)" />
             <x-input-error class="mt-2" :messages="$errors->get('alamat')" />
         </div>
@@ -40,10 +40,16 @@
         <hr class="my-4">
 
         <!-- Ketua -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <x-input-label for="nama_ketua" :value="__('Nama Ketua')" />
                 <x-text-input id="nama_ketua" name="nama_ketua" type="text" class="mt-1 block w-full" :value="old('nama_ketua', $user->nama_ketua)" />
+                <x-input-error class="mt-2" :messages="$errors->get('nama_ketua')" />
+            </div>
+            <div>
+                <x-input-label for="nim_ketua" :value="__('NIM Ketua')" />
+                <x-text-input id="nim_ketua" name="nim_ketua" type="text" class="mt-1 block w-full font-mono" :value="old('nim_ketua', $user->nim_ketua)" placeholder="Contoh: 2106001" />
+                <x-input-error class="mt-2" :messages="$errors->get('nim_ketua')" />
             </div>
             <div>
                 <x-input-label for="ttd_ketua" :value="__('TTD Ketua (PNG Transparan)')" />
@@ -51,14 +57,21 @@
                     <img src="{{ asset('storage/' . $user->ttd_ketua) }}" alt="TTD" class="h-10 mb-1 border bg-gray-50">
                 @endif
                 <input id="ttd_ketua" name="ttd_ketua" type="file" class="mt-1 block w-full border rounded p-1 text-sm" accept=".png" />
+                <x-input-error class="mt-2" :messages="$errors->get('ttd_ketua')" />
             </div>
         </div>
 
         <!-- Sekretaris -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <x-input-label for="nama_sekretaris" :value="__('Nama Sekretaris')" />
                 <x-text-input id="nama_sekretaris" name="nama_sekretaris" type="text" class="mt-1 block w-full" :value="old('nama_sekretaris', $user->nama_sekretaris)" />
+                <x-input-error class="mt-2" :messages="$errors->get('nama_sekretaris')" />
+            </div>
+            <div>
+                <x-input-label for="nim_sekretaris" :value="__('NIM Sekretaris')" />
+                <x-text-input id="nim_sekretaris" name="nim_sekretaris" type="text" class="mt-1 block w-full font-mono" :value="old('nim_sekretaris', $user->nim_sekretaris)" placeholder="Contoh: 2106002" />
+                <x-input-error class="mt-2" :messages="$errors->get('nim_sekretaris')" />
             </div>
             <div>
                 <x-input-label for="ttd_sekretaris" :value="__('TTD Sekretaris (PNG)')" />
@@ -66,14 +79,21 @@
                     <img src="{{ asset('storage/' . $user->ttd_sekretaris) }}" alt="TTD" class="h-10 mb-1 border bg-gray-50">
                 @endif
                 <input id="ttd_sekretaris" name="ttd_sekretaris" type="file" class="mt-1 block w-full border rounded p-1 text-sm" accept=".png" />
+                <x-input-error class="mt-2" :messages="$errors->get('ttd_sekretaris')" />
             </div>
         </div>
 
         <!-- Bendahara -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <x-input-label for="nama_bendahara" :value="__('Nama Bendahara')" />
                 <x-text-input id="nama_bendahara" name="nama_bendahara" type="text" class="mt-1 block w-full" :value="old('nama_bendahara', $user->nama_bendahara)" />
+                <x-input-error class="mt-2" :messages="$errors->get('nama_bendahara')" />
+            </div>
+            <div>
+                <x-input-label for="nim_bendahara" :value="__('NIM Bendahara')" />
+                <x-text-input id="nim_bendahara" name="nim_bendahara" type="text" class="mt-1 block w-full font-mono" :value="old('nim_bendahara', $user->nim_bendahara)" placeholder="Contoh: 2106003" />
+                <x-input-error class="mt-2" :messages="$errors->get('nim_bendahara')" />
             </div>
             <div>
                 <x-input-label for="ttd_bendahara" :value="__('TTD Bendahara (PNG)')" />
@@ -81,6 +101,7 @@
                     <img src="{{ asset('storage/' . $user->ttd_bendahara) }}" alt="TTD" class="h-10 mb-1 border bg-gray-50">
                 @endif
                 <input id="ttd_bendahara" name="ttd_bendahara" type="file" class="mt-1 block w-full border rounded p-1 text-sm" accept=".png" />
+                <x-input-error class="mt-2" :messages="$errors->get('ttd_bendahara')" />
             </div>
         </div>
         @endif

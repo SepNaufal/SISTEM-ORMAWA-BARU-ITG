@@ -71,6 +71,15 @@
                             <p class="text-sm text-gray-500">Dana Diajukan</p>
                             <p class="font-semibold text-emerald-700">Rp {{ number_format($pengajuan->dana_diajukan, 0, ',', '.') }}</p>
                         </div>
+                        @if($pengajuan->dana && $pengajuan->dana->bukti_transfer)
+                        <div>
+                            <p class="text-sm text-gray-500">Bukti Transfer Dana</p>
+                            <a href="{{ route('dokumen.bukti-transfer', $pengajuan->dana) }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-md transition mt-0.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                Lihat Bukti Transfer
+                            </a>
+                        </div>
+                        @endif
                         @if($pengajuan->nomor_surat)
                         <div class="sm:col-span-2">
                             <p class="text-sm text-gray-500">Nomor Surat Resmi</p>
@@ -86,6 +95,40 @@
                         </a>
                     </div>
 
+                    @if($pengajuan->tandaTanganDigitals && $pengajuan->tandaTanganDigitals->isNotEmpty())
+                    <div class="mt-6 mb-6 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                                <span class="text-emerald-600 font-bold">🔒</span> Pengesahan &amp; Tanda Tangan Digital Resmi ({{ $pengajuan->tandaTanganDigitals->count() }})
+                            </h4>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
+                                Terverifikasi Kriptografis
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            @foreach($pengajuan->tandaTanganDigitals as $sig)
+                            <div class="p-3 bg-white rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between text-xs mb-1">
+                                        <span class="font-bold text-indigo-700 uppercase tracking-wide">{{ strtoupper($sig->role) }}</span>
+                                        <span class="text-[10px] text-slate-400">{{ $sig->signed_at ? $sig->signed_at->format('d/m/Y H:i') : '-' }} WIB</span>
+                                    </div>
+                                    <div class="font-semibold text-sm text-slate-900 leading-snug">{{ $sig->nama_penandatangan }}</div>
+                                    <div class="text-[11px] text-slate-500 leading-tight mt-0.5">{{ $sig->jabatan_penandatangan }}</div>
+                                </div>
+                                <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
+                                    <span class="font-mono text-[9px] text-slate-400">ID: {{ substr($sig->token_verifikasi, 0, 14) }}...</span>
+                                    <a href="{{ $sig->verification_url }}" target="_blank" class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 hover:text-emerald-800 hover:underline">
+                                        <span>Cek Keaslian</span>
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                    </a>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
                     @if($pengajuan->state->name === 'draft')
                     @php
                         $submitTarget = auth()->user()->hasRole('bpm') ? 'BKHM' : (auth()->user()->hasRole('bem') ? 'BPM' : 'BEM');
@@ -97,6 +140,63 @@
                                 Ajukan ke {{ $submitTarget }}
                             </x-primary-button>
                         </form>
+                    </div>
+                    @endif
+
+                    @if($pengajuan->state->name === 'funds_disbursed' && $pengajuan->user_id === Auth::id())
+                    <div class="mt-8 pt-4 border-t">
+                        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                                        💰 Dana Telah Dicairkan
+                                    </span>
+                                </div>
+                                <h4 class="font-bold text-emerald-950 text-sm mt-1.5">Langkah Selanjutnya: Unggah Laporan Pertanggungjawaban (LPJ)</h4>
+                                <p class="text-xs text-emerald-800 mt-0.5">
+                                    Dana kas sebesar <strong>Rp {{ number_format($pengajuan->dana_diajukan, 0, ',', '.') }}</strong> telah dicairkan oleh Bendahara. Setelah kegiatan selesai dilaksanakan, segera unggah dokumen LPJ format PDF beserta bukti transaksi/dokumentasi untuk menyelesaikan siklus anggaran dan membuka kembali akses pengajuan baru.
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                @if($pengajuan->dana?->bukti_transfer)
+                                    <a href="{{ route('dokumen.bukti-transfer', $pengajuan->dana) }}" target="_blank" class="inline-flex items-center px-3.5 py-2.5 bg-white border border-emerald-300 text-emerald-700 hover:bg-emerald-50 font-bold rounded-lg text-xs shadow-sm transition">
+                                        <svg class="w-4 h-4 mr-1.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                        Bukti Transfer
+                                    </a>
+                                @endif
+                                <a href="{{ route('lpj.create', $pengajuan) }}" class="inline-flex items-center px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs shadow transition">
+                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    Unggah Dokumen LPJ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(in_array($pengajuan->state->name, ['lpj_submitted', 'lpj_wr3_review', 'completed']))
+                    <div class="mt-8 pt-4 border-t">
+                        <div class="p-4 {{ $pengajuan->state->name === 'completed' ? 'bg-green-50 border border-green-200' : 'bg-indigo-50 border border-indigo-200' }} rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold {{ $pengajuan->state->name === 'completed' ? 'bg-green-100 text-green-800' : 'bg-indigo-100 text-indigo-800' }}">
+                                        {{ $pengajuan->state->name === 'completed' ? '✅ LPJ Disetujui & Selesai' : '📑 LPJ Sedang Ditinjau' }}
+                                    </span>
+                                </div>
+                                <h4 class="font-bold text-gray-900 text-sm mt-1.5">Dokumen Laporan Pertanggungjawaban (LPJ)</h4>
+                                <p class="text-xs text-gray-600 mt-0.5">
+                                    @if($pengajuan->state->name === 'completed')
+                                        Siklus kegiatan ini telah selesai secara penuh dan evaluasi akhir telah disetujui oleh WR3.
+                                    @else
+                                        Dokumen LPJ telah diunggah dan saat ini sedang dalam proses evaluasi oleh <strong>{{ $pengajuan->state->label }}</strong>.
+                                    @endif
+                                </p>
+                            </div>
+                            @if($pengajuan->file_lpj)
+                            <a href="{{ route('dokumen.lpj', $pengajuan) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg text-xs shadow transition shrink-0">
+                                Pratinjau Berkas LPJ
+                            </a>
+                            @endif
+                        </div>
                     </div>
                     @endif
                 </div>

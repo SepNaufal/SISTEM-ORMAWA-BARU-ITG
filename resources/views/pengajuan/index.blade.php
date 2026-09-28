@@ -87,14 +87,14 @@
                                             if ($pengajuan->state->name === 'rejected') $badgeClass = 'bg-red-100 text-red-800 border border-red-300';
                                             elseif ($pengajuan->state->name === 'completed') $badgeClass = 'bg-green-100 text-green-800';
                                             elseif ($pengajuan->state->name === 'draft') $badgeClass = 'bg-yellow-100 text-yellow-800';
-                                            else $badgeClass = 'bg-blue-100 text-blue-800';
+                                            else $badgeClass = 'bg-indigo-100 text-indigo-800';
                                         @endphp
                                         <span class="px-2 py-1 {{ $badgeClass }} rounded-full text-xs font-semibold">
                                             {{ $pengajuan->state->label }}
                                         </span>
                                     </td>
                                     <td class="py-3 px-4 text-center space-x-2">
-                                        <a href="{{ route('pengajuan.show', $pengajuan) }}" class="text-blue-600 hover:text-blue-900 text-sm font-semibold">Detail</a>
+                                        <a href="{{ route('pengajuan.show', $pengajuan) }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-semibold">Detail</a>
                                         
                                         @if(in_array($pengajuan->state->name, ['draft', 'rejected']))
                                             <a href="{{ route('pengajuan.edit', $pengajuan) }}" class="text-yellow-600 hover:text-yellow-900 text-sm font-semibold">Edit</a>

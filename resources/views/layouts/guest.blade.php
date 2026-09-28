@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ isset($title) ? $title . ' - ' : '' }}SKIN - Sistem Ormawa Institut Teknologi Garut</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -14,18 +14,18 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+    <body class="font-sans text-slate-900 antialiased">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-slate-50">
             <div>
                 <a href="/" class="flex flex-col items-center">
-                    <div class="w-24 h-24 rounded-2xl bg-white p-2 shadow-sm border border-gray-200 flex items-center justify-center mb-2">
+                    <div class="w-24 h-24 rounded-2xl bg-white p-2 border border-slate-200 flex items-center justify-center mb-2">
                         <x-application-logo class="w-full h-full object-contain" />
                     </div>
-                    <span class="text-xl font-bold text-gray-800 tracking-tight">Institut Teknologi Garut</span>
+                    <span class="text-xl font-bold text-slate-800 tracking-tight">Institut Teknologi Garut</span>
                 </a>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white border border-slate-200 overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>
         </div>

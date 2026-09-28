@@ -38,7 +38,7 @@ return new class extends Migration
             $table->string('ttd_3_nim')->nullable();
             $table->string('ttd_3_file')->nullable();
             
-            $table->enum('status', ['draft', 'final'])->default('draft');
+            $table->string('status', 50)->default('draft');
             $table->timestamps();
         });
     }

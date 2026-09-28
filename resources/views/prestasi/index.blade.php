@@ -29,7 +29,22 @@
                             <tbody>
                                 @forelse($prestasis as $p)
                                 <tr class="border-b">
-                                    <td class="p-2 border">{{ $p->nama_kegiatan }}</td>
+                                    <td class="p-2 border">
+                                        <div class="font-semibold text-gray-900">{{ $p->nama_kegiatan }}</div>
+                                        <div class="text-xs text-gray-500 mt-0.5">
+                                            <span>📅 {{ $p->rentang_tanggal }}</span>
+                                            @if($p->penyelenggara)
+                                                &bull;
+                                                @if($p->url_penyelenggara)
+                                                    <a href="{{ $p->url_penyelenggara }}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">
+                                                        {{ $p->penyelenggara }} &nearr;
+                                                    </a>
+                                                @else
+                                                    <span>{{ $p->penyelenggara }}</span>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    </td>
                                     <td class="p-2 border">{{ $p->user->name ?? '-' }}</td>
                                     <td class="p-2 border">{{ $p->tingkat }}</td>
                                     <td class="p-2 border">{{ $p->juara ?? '-' }}</td>
@@ -41,7 +56,10 @@
                                     </td>
                                     <td class="p-2 border text-center space-x-2">
                                         @if($p->file_bukti)
-                                            <a href="{{ route('prestasi.bukti', $p) }}" class="text-indigo-600 hover:underline text-xs">Bukti</a>
+                                            <a href="{{ route('prestasi.bukti', $p) }}" class="text-indigo-600 hover:underline text-xs font-medium">Scan Sertifikat</a>
+                                        @endif
+                                        @if($p->foto_penyerahan)
+                                            <a href="{{ asset('storage/' . $p->foto_penyerahan) }}" target="_blank" class="text-amber-600 hover:underline text-xs font-medium">Foto Medali</a>
                                         @endif
                                         @hasanyrole('bkhm|wr3|admin')
                                         @if($p->status === 'pending')

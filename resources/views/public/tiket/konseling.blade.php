@@ -1,57 +1,34 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Konseling Mahasiswa (Rahasia) - ITG</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-slate-50 text-slate-800 antialiased font-sans">
-    <!-- Navbar -->
-    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-            <a href="{{ route('layanan.index') }}" class="flex items-center gap-3">
-                <img src="{{ asset('images/logo_itg.png') }}" alt="Logo ITG" class="h-11 w-auto object-contain">
-                <div>
-                    <span class="text-xs font-semibold tracking-wider text-teal-700 uppercase block">Institut Teknologi Garut</span>
-                    <span class="text-base font-extrabold text-slate-900 leading-tight">Portal Layanan Mahasiswa</span>
-                </div>
-            </a>
-            <div class="flex items-center gap-3">
-                <a href="{{ route('layanan.cek-status') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    Cek Status
-                </a>
-            </div>
-        </div>
-    </header>
+<x-public-layout title="Konseling Mahasiswa" brand-label="Portal Layanan Mahasiswa" accent="emerald">
+    <x-slot name="nav">
+        <a href="{{ route('layanan.cek-status') }}" class="inline-flex items-center gap-2 min-h-[44px] px-4 py-2 rounded-xl text-sm font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span class="hidden sm:inline">Cek Status</span>
+            <span class="sm:hidden">Cek</span>
+        </a>
+    </x-slot>
 
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
-        <!-- Breadcrumb & Title -->
-        <div class="mb-6">
-            <div class="flex items-center gap-2 text-xs text-slate-500 mb-2">
-                <a href="{{ route('layanan.index') }}" class="hover:text-teal-600 transition">Portal Layanan</a>
-                <span>/</span>
-                <span class="text-slate-800 font-medium">Konseling Mahasiswa</span>
-            </div>
-            <div class="flex items-center gap-3 mb-1">
-                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Layanan Konseling Personal</h1>
-                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-teal-100 text-teal-800 border border-teal-200">
-                    Kerahasiaan Terjamin
-                </span>
-            </div>
-            <p class="text-sm text-slate-600 mt-1">Konsultasikan kendala akademik, psikologis, finansial, atau personal dengan konselor BKHM secara aman dan empatik.</p>
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+        <nav class="flex items-center gap-2 text-xs text-slate-600 mb-2">
+            <a href="{{ route('layanan.index') }}" class="hover:text-emerald-700 transition">Portal Layanan</a>
+            <span class="text-slate-500">/</span>
+            <span class="text-slate-800 font-medium">Konseling Mahasiswa</span>
+        </nav>
+        <div class="flex flex-wrap items-center gap-3 mb-1">
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Layanan Konseling Personal</h1>
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                Kerahasiaan Terjamin
+            </span>
         </div>
+        <p class="text-sm text-slate-600 mt-1">Konsultasikan kendala akademik, psikologis, finansial, atau personal dengan konselor BKHM secara aman dan empatik.</p>
 
-        <!-- Privacy Assurance Alert -->
-        <div class="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200 rounded-2xl p-5 mb-8 flex gap-4 text-teal-950 text-xs sm:text-sm shadow-sm">
-            <div class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center flex-shrink-0 shadow">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 mt-6 mb-8 flex gap-4 text-emerald-950 text-xs sm:text-sm">
+            <div class="w-9 h-9 rounded-xl bg-emerald-700 text-white flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2" stroke-linecap="round" stroke-linejoin="round"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
             </div>
             <div class="space-y-1">
-                <strong class="font-bold text-teal-900 text-sm block">Jaminan Kerahasiaan & Privasi 100%</strong>
-                <p class="text-teal-800 leading-relaxed">
-                    Pengajuan konseling ini <strong>hanya dapat dibaca oleh staf konseling BKHM</strong>. Mahasiswa lain atau pengurus ormawa sama sekali tidak memiliki akses ke tiket ini. Jadwal pertemuan atau respons akan dikirimkan ke email Anda secara tertutup.
+                <strong class="font-bold text-emerald-950 text-sm block">Jaminan Kerahasiaan &amp; Privasi Eksklusif BKHM</strong>
+                <p class="text-emerald-900 leading-relaxed">
+                    Pengajuan konseling ini bersifat <strong>rahasia penuh antara Anda dan staf konselor BKHM</strong>. Badan Perwakilan Mahasiswa (BPM), BEM, maupun pengurus ormawa <strong>sama sekali tidak memiliki akses</strong> ke data atau tiket konseling ini. Jadwal pertemuan atau respons akan dikirimkan langsung ke email Anda secara tertutup.
                 </p>
             </div>
         </div>
@@ -67,46 +44,45 @@
             </div>
         @endif
 
-        <!-- Form Card -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-            <form action="{{ route('layanan.konseling.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8">
+            <form action="{{ route('layanan.konseling.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6" x-data="{ submitting: false }" @submit="submitting = true">
                 @csrf
 
                 <div class="border-b border-slate-100 pb-4">
                     <h2 class="text-base font-bold text-slate-900">1. Data Mahasiswa</h2>
-                    <p class="text-xs text-slate-500">Data Anda disimpan secara rahasia untuk keperluan komunikasi konselor.</p>
+                    <p class="text-xs text-slate-600">Data Anda disimpan secara rahasia untuk keperluan komunikasi konselor.</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                        <label for="nim" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">NIM <span class="text-rose-500">*</span></label>
+                        <label for="nim" class="block text-sm font-semibold text-slate-700 mb-1.5">NIM <span class="text-rose-600">*</span></label>
                         <input type="text" name="nim" id="nim" value="{{ old('nim') }}" required placeholder="Contoh: 2106001"
-                            class="w-full text-sm rounded-xl border-slate-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm py-2.5 px-3.5">
+                            class="w-full text-sm rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600 py-3 px-3.5 placeholder-slate-500">
                     </div>
                     <div>
-                        <label for="nama_mahasiswa" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap <span class="text-rose-500">*</span></label>
+                        <label for="nama_mahasiswa" class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Lengkap <span class="text-rose-600">*</span></label>
                         <input type="text" name="nama_mahasiswa" id="nama_mahasiswa" value="{{ old('nama_mahasiswa') }}" required placeholder="Nama lengkap Anda"
-                            class="w-full text-sm rounded-xl border-slate-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm py-2.5 px-3.5">
+                            class="w-full text-sm rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600 py-3 px-3.5 placeholder-slate-500">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                        <label for="email" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Email Aktif <span class="text-rose-500">*</span></label>
+                        <label for="email" class="block text-sm font-semibold text-slate-700 mb-1.5">Email Aktif <span class="text-rose-600">*</span></label>
                         <input type="email" name="email" id="email" value="{{ old('email') }}" required placeholder="email@itg.ac.id atau gmail"
-                            class="w-full text-sm rounded-xl border-slate-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm py-2.5 px-3.5">
-                        <span class="text-[11px] text-slate-500 mt-1 block">Jadwal temu & pesan konselor dikirim privat ke sini.</span>
+                            class="w-full text-sm rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600 py-3 px-3.5 placeholder-slate-500">
+                        <span class="text-[11px] text-slate-600 mt-1 block">Jadwal temu dan pesan konselor dikirim privat ke sini.</span>
                     </div>
                     <div>
-                        <label for="no_hp" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">No. WhatsApp / HP</label>
-                        <input type="text" name="no_hp" id="no_hp" value="{{ old('no_hp') }}" placeholder="08xxxxxxxxxx"
-                            class="w-full text-sm rounded-xl border-slate-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm py-2.5 px-3.5">
+                        <label for="no_hp" class="block text-sm font-semibold text-slate-700 mb-1.5">No. WhatsApp / HP <span class="text-rose-600">*</span></label>
+                        <input type="text" name="no_hp" id="no_hp" value="{{ old('no_hp') }}" required placeholder="08xxxxxxxxxx"
+                            class="w-full text-sm rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600 py-3 px-3.5 placeholder-slate-500">
                     </div>
                 </div>
 
                 <div>
-                    <label for="prodi" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Program Studi</label>
-                    <select name="prodi" id="prodi" class="w-full text-sm rounded-xl border-slate-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm py-2.5 px-3.5">
+                    <label for="prodi" class="block text-sm font-semibold text-slate-700 mb-1.5">Program Studi <span class="text-rose-600">*</span></label>
+                    <select name="prodi" id="prodi" required class="w-full text-sm rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600 py-3 px-3.5">
                         <option value="">-- Pilih Program Studi --</option>
                         <option value="Teknik Informatika" {{ old('prodi') == 'Teknik Informatika' ? 'selected' : '' }}>Teknik Informatika</option>
                         <option value="Sistem Informasi" {{ old('prodi') == 'Sistem Informasi' ? 'selected' : '' }}>Sistem Informasi</option>
@@ -118,25 +94,25 @@
 
                 <div class="border-b border-slate-100 pt-4 pb-4">
                     <h2 class="text-base font-bold text-slate-900">2. Rencana Konseling</h2>
-                    <p class="text-xs text-slate-500">Pilih topik dan preferensi metode pelaksanaan konseling.</p>
+                    <p class="text-xs text-slate-600">Pilih topik dan preferensi metode pelaksanaan konseling.</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                        <label for="topik_konseling" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Topik Masalah <span class="text-rose-500">*</span></label>
-                        <select name="topik_konseling" id="topik_konseling" required class="w-full text-sm rounded-xl border-slate-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm py-2.5 px-3.5">
+                        <label for="topik_konseling" class="block text-sm font-semibold text-slate-700 mb-1.5">Topik Masalah <span class="text-rose-600">*</span></label>
+                        <select name="topik_konseling" id="topik_konseling" required class="w-full text-sm rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600 py-3 px-3.5">
                             <option value="">-- Pilih Topik Masalah --</option>
                             <option value="Kendala Akademik / IPK" {{ old('topik_konseling') == 'Kendala Akademik / IPK' ? 'selected' : '' }}>Kendala Akademik / IPK</option>
-                            <option value="Stres Perkuliahan & Kesehatan Mental" {{ old('topik_konseling') == 'Stres Perkuliahan & Kesehatan Mental' ? 'selected' : '' }}>Stres Perkuliahan & Kesehatan Mental</option>
+                            <option value="Stres Perkuliahan & Kesehatan Mental" {{ old('topik_konseling') == 'Stres Perkuliahan & Kesehatan Mental' ? 'selected' : '' }}>Stres Perkuliahan &amp; Kesehatan Mental</option>
                             <option value="Masalah Pribadi / Keluarga / Sosial" {{ old('topik_konseling') == 'Masalah Pribadi / Keluarga / Sosial' ? 'selected' : '' }}>Masalah Pribadi / Keluarga / Sosial</option>
                             <option value="Kendala Finansial / Pembayaran UKT" {{ old('topik_konseling') == 'Kendala Finansial / Pembayaran UKT' ? 'selected' : '' }}>Kendala Finansial / Pembayaran UKT</option>
-                            <option value="Perencanaan Karir & Pasca-Kampus" {{ old('topik_konseling') == 'Perencanaan Karir & Pasca-Kampus' ? 'selected' : '' }}>Perencanaan Karir & Pasca-Kampus</option>
+                            <option value="Perencanaan Karir & Pasca-Kampus" {{ old('topik_konseling') == 'Perencanaan Karir & Pasca-Kampus' ? 'selected' : '' }}>Perencanaan Karir &amp; Pasca-Kampus</option>
                             <option value="Lainnya" {{ old('topik_konseling') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                         </select>
                     </div>
                     <div>
-                        <label for="metode_konseling" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Metode Konseling yang Diinginkan <span class="text-rose-500">*</span></label>
-                        <select name="metode_konseling" id="metode_konseling" required class="w-full text-sm rounded-xl border-slate-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm py-2.5 px-3.5">
+                        <label for="metode_konseling" class="block text-sm font-semibold text-slate-700 mb-1.5">Metode Konseling yang Diinginkan <span class="text-rose-600">*</span></label>
+                        <select name="metode_konseling" id="metode_konseling" required class="w-full text-sm rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600 py-3 px-3.5">
                             <option value="">-- Pilih Metode Konseling --</option>
                             <option value="Tatap Muka (Ruang Konseling BKHM)" {{ old('metode_konseling') == 'Tatap Muka (Ruang Konseling BKHM)' ? 'selected' : '' }}>Tatap Muka Langsung (Ruang BKHM)</option>
                             <option value="Daring / Online (Google Meet/Zoom)" {{ old('metode_konseling') == 'Daring / Online (Google Meet/Zoom)' ? 'selected' : '' }}>Daring / Online (Google Meet/Zoom)</option>
@@ -146,33 +122,28 @@
                 </div>
 
                 <div>
-                    <label for="deskripsi_masalah" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Deskripsi Cerita / Kendala yang Dihadapi <span class="text-rose-500">*</span></label>
+                    <label for="deskripsi_masalah" class="block text-sm font-semibold text-slate-700 mb-1.5">Deskripsi Cerita / Kendala yang Dihadapi <span class="text-rose-600">*</span></label>
                     <textarea name="deskripsi_masalah" id="deskripsi_masalah" rows="6" required placeholder="Ceritakan secara bebas apa yang sedang Anda rasakan atau hadapi. Konselor BKHM siap mendengarkan tanpa menghakimi..."
-                        class="w-full text-sm rounded-xl border-slate-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm py-2.5 px-3.5">{{ old('deskripsi_masalah') }}</textarea>
+                        class="w-full text-sm rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600 py-3 px-3.5 placeholder-slate-500">{{ old('deskripsi_masalah') }}</textarea>
                 </div>
 
                 <div>
-                    <label for="lampiran" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Dokumen Pendukung (Opsional)</label>
+                    <label for="lampiran" class="block text-sm font-semibold text-slate-700 mb-1.5">Dokumen Pendukung (Opsional)</label>
                     <input type="file" name="lampiran" id="lampiran" accept=".pdf,.jpg,.jpeg,.png"
-                        class="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 border border-slate-200 rounded-xl p-2">
-                    <span class="text-[11px] text-slate-500 mt-1 block">Format: PDF, JPG, PNG (contoh: KHS, surat keterangan, dsb). Maks 5 MB.</span>
+                        class="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-800 hover:file:bg-emerald-100 border border-slate-200 rounded-lg p-2">
+                    <span class="text-[11px] text-slate-600 mt-1 block">Format: PDF, JPG, PNG (contoh: KHS, surat keterangan). Maks 5 MB.</span>
                 </div>
 
                 <div class="pt-4 flex items-center justify-between border-t border-slate-100">
-                    <a href="{{ route('layanan.index') }}" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+                    <a href="{{ route('layanan.index') }}" class="inline-flex items-center min-h-[44px] px-5 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">
                         Batal
                     </a>
-                    <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 shadow-md shadow-teal-500/20 transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        Kirim Permohonan Konseling
+                    <button type="submit" :disabled="submitting" class="inline-flex items-center justify-center gap-2 min-h-[44px] px-6 rounded-xl text-sm font-bold text-white bg-emerald-700 hover:bg-emerald-800 disabled:opacity-70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2" stroke-linecap="round" stroke-linejoin="round"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+                        <span x-text="submitting ? 'Memproses...' : 'Kirim Permohonan Konseling'">Kirim Permohonan Konseling</span>
                     </button>
                 </div>
             </form>
         </div>
-    </main>
-
-    <footer class="bg-white border-t border-slate-200 py-8 text-center text-xs text-slate-500">
-        &copy; {{ date('Y') }} Institut Teknologi Garut. Bagian Kemahasiswaan & Hubungan Alumni.
-    </footer>
-</body>
-</html>
+    </div>
+</x-public-layout>

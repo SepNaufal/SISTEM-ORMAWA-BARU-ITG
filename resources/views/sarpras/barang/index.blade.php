@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{ showAddModal: false, showEditModal: false, editBarang: null }">
+    <div class="py-12" x-data="{ showAddModal: false, showEditModal: false, editBarang: { id: null, nama_barang: '', stok_tersedia: 0, status_aktif: 1, boleh_dibawa_keluar: 1 } }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
 
@@ -47,13 +47,13 @@
                                     </td>
                                     <td class="py-3 px-4 text-center">
                                         @if($barang->boleh_dibawa_keluar)
-                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Ya</span>
+                                            <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs">Ya</span>
                                         @else
                                             <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Tidak</span>
                                         @endif
                                     </td>
                                     <td class="py-3 px-4 text-center space-x-2">
-                                        <button @click="showEditModal = true; editBarang = {{ json_encode($barang) }}" class="text-blue-600 hover:text-blue-900 text-sm">Edit</button>
+                                        <button @click="showEditModal = true; editBarang = {{ json_encode($barang) }}" class="text-indigo-600 hover:text-indigo-900 text-sm">Edit</button>
                                         
                                         <form action="{{ route('sarpras.barang.destroy', $barang) }}" method="POST" class="inline">
                                             @csrf
@@ -143,9 +143,9 @@
                             </div>
                         </div>
                         <div class="mt-6 flex justify-end gap-3">
-                            <button type="button" @click="showEditModal = false" class="px-4 py-2 border rounded text-gray-600">Batal</button>
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                Update
+                            <button type="button" @click="showEditModal = false" class="px-4 py-2 border border-slate-300 rounded-md text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md font-semibold text-xs text-white uppercase tracking-wider transition-colors shadow-sm">
+                                Perbarui
                             </button>
                         </div>
                     </form>

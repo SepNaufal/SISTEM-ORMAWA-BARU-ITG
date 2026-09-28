@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Pengajuan extends Model
 {
@@ -67,6 +68,11 @@ class Pengajuan extends Model
     public function dana(): HasOne
     {
         return $this->hasOne(Dana::class)->latestOfMany();
+    }
+
+    public function tandaTanganDigitals(): MorphMany
+    {
+        return $this->morphMany(TandaTanganDigital::class, 'signable')->latest();
     }
 
     /**

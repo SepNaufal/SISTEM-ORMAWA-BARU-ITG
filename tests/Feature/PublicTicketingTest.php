@@ -54,13 +54,12 @@ class PublicTicketingTest extends TestCase
 
         $tiket = TiketLayanan::where('email', 'budi@itg.ac.id')->first();
         $this->assertNotNull($tiket);
-        $this->assertMatchesRegularExpression('/^SKIN-TKT-\d{4}-\d{4}$/', $tiket->kode_tiket);
+        $this->assertMatchesRegularExpression('/^SKIN-TKT-\d{4}-[A-Z0-9]{6}$/', $tiket->kode_tiket);
         $this->assertEquals('aspirasi', $tiket->kategori);
         $this->assertEquals('pending', $tiket->status);
 
         $response->assertRedirect(route('layanan.cek-status', [
             'kode' => $tiket->kode_tiket,
-            'email' => $tiket->email,
         ]));
     }
 
@@ -82,11 +81,10 @@ class PublicTicketingTest extends TestCase
         $tiket = TiketLayanan::where('email', 'siti@itg.ac.id')->first();
         $this->assertNotNull($tiket);
         $this->assertEquals('konseling', $tiket->kategori);
-        $this->assertMatchesRegularExpression('/^SKIN-TKT-\d{4}-\d{4}$/', $tiket->kode_tiket);
+        $this->assertMatchesRegularExpression('/^SKIN-TKT-\d{4}-[A-Z0-9]{6}$/', $tiket->kode_tiket);
 
         $response->assertRedirect(route('layanan.cek-status', [
             'kode' => $tiket->kode_tiket,
-            'email' => $tiket->email,
         ]));
     }
 
@@ -293,6 +291,76 @@ class PublicTicketingTest extends TestCase
         $resShowcase->assertSee('Medali Emas');
     }
 
+    public function test_public_can_submit_prestasi_with_bimbingan_fields_and_view_in_showcase(): void
+    {
+        Storage::fake('public');
+        Storage::fake('local');
+
+        $bkhm = User::factory()->create();
+        $bkhm->assignRole('bkhm');
+
+        $payload = [
+            'nim'               => '2306085',
+            'nama_mahasiswa'    => 'Andi Muhamad Ramdani',
+            'email'             => 'andi@itg.ac.id',
+            'no_hp'             => '08123456789',
+            'prodi'             => 'Teknik Informatika',
+            'sub_kategori'      => 'lapor_prestasi',
+            'nama_kegiatan'     => 'Gemastik XVII 2026 Divisi UX Design',
+            'penyelenggara'     => 'Pusat Prestasi Nasional Kemdikbud',
+            'url_penyelenggara' => 'https://pusatprestasinasional.kemdikbud.go.id/gemastik2026',
+            'tingkat'           => 'Nasional',
+            'capaian'           => 'Juara 1 (Medali Emas)',
+            'tanggal_mulai'     => '2026-08-10',
+            'tanggal_selesai'   => '2026-08-15',
+            'lampiran_bukti'    => UploadedFile::fake()->create('sertifikat_juara.pdf', 500, 'application/pdf'),
+            'foto_penyerahan'   => UploadedFile::fake()->image('penyerahan_medali.jpg'),
+        ];
+
+        $resStore = $this->post(route('layanan.prestasi.store'), $payload);
+        $resStore->assertRedirect();
+
+        // 1. Verifikasi data tersimpan di tabel tiket_layanans
+        $this->assertDatabaseHas('tiket_layanans', [
+            'nim'               => '2306085',
+            'sub_kategori'      => 'lapor_prestasi',
+            'url_penyelenggara' => 'https://pusatprestasinasional.kemdikbud.go.id/gemastik2026',
+        ]);
+
+        $tiket = TiketLayanan::where('nim', '2306085')->latest()->first();
+        $this->assertEquals('2026-08-10', $tiket->tanggal_mulai->format('Y-m-d'));
+        $this->assertEquals('2026-08-15', $tiket->tanggal_selesai->format('Y-m-d'));
+        $this->assertNotNull($tiket->foto_penyerahan);
+        Storage::disk('public')->assertExists($tiket->foto_penyerahan);
+        Storage::disk('local')->assertExists($tiket->lampiran_bukti);
+
+        // 2. BKHM membuka index verifikasi tiket prestasi
+        $resBkhm = $this->actingAs($bkhm)->get(route('bkhm.tiket-prestasi.index'));
+        $resBkhm->assertStatus(200);
+        $resBkhm->assertSee('Gemastik XVII 2026 Divisi UX Design');
+        $resBkhm->assertSee('https://pusatprestasinasional.kemdikbud.go.id/gemastik2026');
+        $resBkhm->assertSee('Scan Sertifikat');
+        $resBkhm->assertSee('Foto Penyerahan');
+
+        // 3. BKHM menyetujui dan mempublikasikan ke Showcase
+        $resApprove = $this->actingAs($bkhm)->post(route('bkhm.tiket-prestasi.update', $tiket), [
+            'status'            => 'disetujui',
+            'catatan_bkhm'      => 'Prestasi luar biasa! Selamat kepada Andi.',
+            'tampil_ke_publik'  => true,
+        ]);
+        $resApprove->assertRedirect();
+
+        // 4. Publik membuka Showcase Prestasi
+        $resShowcase = $this->get(route('prestasi.showcase'));
+        $resShowcase->assertStatus(200);
+        $resShowcase->assertSee('Gemastik XVII 2026 Divisi UX Design');
+        $resShowcase->assertSee('Juara 1 (Medali Emas)');
+        $resShowcase->assertSee('Andi Muhamad Ramdani');
+        $resShowcase->assertSee('https://pusatprestasinasional.kemdikbud.go.id/gemastik2026');
+        $resShowcase->assertSee($tiket->rentang_tanggal);
+        $resShowcase->assertSee($tiket->foto_penyerahan);
+    }
+
     public function test_revisi_proposal_resets_to_initial_stage(): void
     {
         $ormawa = User::factory()->create();
@@ -372,5 +440,41 @@ class PublicTicketingTest extends TestCase
 
         $resBkhmPdf = $this->actingAs($bkhm)->get(route('bkhm.export.pdf'));
         $resBkhmPdf->assertStatus(200);
+    }
+
+    public function test_submitting_ticket_requires_prodi_and_no_hp(): void
+    {
+        // 1. Test Aspirasi missing prodi & no_hp
+        $resAspirasi = $this->post(route('layanan.aspirasi.store'), [
+            'nim' => '2106099',
+            'nama_mahasiswa' => 'Test User',
+            'email' => 'test@itg.ac.id',
+            'judul' => 'Judul Test',
+            'isi' => 'Konten Test',
+        ]);
+        $resAspirasi->assertSessionHasErrors(['prodi', 'no_hp']);
+
+        // 2. Test Konseling missing prodi & no_hp
+        $resKonseling = $this->post(route('layanan.konseling.store'), [
+            'nim' => '2106099',
+            'nama_mahasiswa' => 'Test User',
+            'email' => 'test@itg.ac.id',
+            'topik_konseling' => 'Kendala Akademik / IPK',
+            'metode_konseling' => 'Tatap Muka (Ruang Konseling BKHM)',
+            'deskripsi_masalah' => 'Deskripsi masalah',
+        ]);
+        $resKonseling->assertSessionHasErrors(['prodi', 'no_hp']);
+
+        // 3. Test Prestasi missing prodi & no_hp
+        $resPrestasi = $this->post(route('layanan.prestasi.store'), [
+            'nim' => '2106099',
+            'nama_mahasiswa' => 'Test User',
+            'email' => 'test@itg.ac.id',
+            'sub_kategori' => 'lapor_prestasi',
+            'nama_kegiatan' => 'Lomba Test',
+            'penyelenggara' => 'Institut Test',
+            'tingkat' => 'Nasional',
+        ]);
+        $resPrestasi->assertSessionHasErrors(['prodi', 'no_hp']);
     }
 }

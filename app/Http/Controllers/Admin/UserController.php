@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PasswordChangedMail;
 use App\Models\PeriodeAnggaran;
+use App\Models\PasswordResetLog;
 use App\Models\SaldoHistori;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -63,12 +66,28 @@ class UserController extends Controller
         $user->username = $request->username;
         $user->status_akun = $request->status_akun;
         
-        if ($request->password) {
+        $passwordChanged = (bool) $request->password;
+
+        if ($passwordChanged) {
             $user->password = Hash::make($request->password);
         }
         
         $user->save();
         $user->syncRoles([$request->role]);
+
+        if ($passwordChanged) {
+            PasswordResetLog::create([
+                'user_id' => $user->id,
+                'actor_id' => auth()->id(),
+                'actor_role' => auth()->user()?->getRoleNames()->first() ?? 'admin',
+                'ip_address' => $request->ip(),
+            ]);
+
+            try {
+                Mail::to($user->email)->send(new PasswordChangedMail($user, 'panel administrasi BKHM/Admin'));
+            } catch (\Throwable $e) {
+            }
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'User berhasil diupdate.');
     }

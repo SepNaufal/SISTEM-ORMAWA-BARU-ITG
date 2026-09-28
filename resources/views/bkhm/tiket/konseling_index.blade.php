@@ -5,7 +5,7 @@
                 Konseling Mahasiswa (Rahasia BKHM)
             </h2>
             <span class="px-3 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-800 border border-teal-200">
-                🔒 Akses Terbatas Staf BKHM
+                🔒 Akses Terbatas BKHM
             </span>
         </div>
     </x-slot>

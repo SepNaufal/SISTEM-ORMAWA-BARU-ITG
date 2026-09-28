@@ -27,8 +27,17 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white p-6 rounded shadow text-center"><div class="text-3xl font-bold">{{ $counts['verifikasi_proposal'] }}</div><div class="text-sm text-gray-600">Verifikasi Proposal</div></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="{{ route('verifikasi.index') }}" class="bg-white p-6 rounded shadow text-center border-l-4 border-indigo-500 hover:bg-indigo-50 transition block">
+                    <div class="text-3xl font-bold text-indigo-700">{{ $counts['verifikasi_proposal'] }}</div>
+                    <div class="text-sm font-semibold text-gray-700">Verifikasi Proposal</div>
+                    <span class="text-xs text-indigo-500">Buka Antrean &rarr;</span>
+                </a>
+                <a href="{{ route('proker.index') }}" class="bg-white p-6 rounded shadow text-center border-l-4 border-indigo-500 hover:bg-indigo-50 transition block">
+                    <div class="text-3xl font-bold text-indigo-600">📋</div>
+                    <div class="text-sm font-semibold text-gray-700">Program Kerja Ormawa</div>
+                    <span class="text-xs text-indigo-500">Kelola Proker &rarr;</span>
+                </a>
             </div>
 
             <div class="bg-white p-4 rounded shadow">

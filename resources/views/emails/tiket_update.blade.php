@@ -22,7 +22,7 @@
         </div>
         @if($tiket->jadwal_temu)
             <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #d1d5db; font-size: 13px; color: #1e40af;">
-                <strong>Jadwal Temu Konseling:</strong> {{ $tiket->jadwal_temu->translatedFormat('l, d F Y - H:i') }} WIB<br>
+                <strong>Jadwal Temu Konseling:</strong> {{ $tiket->jadwal_temu->translatedFormat('l, d F Y') }} pukul {{ $tiket->jadwal_temu->format('H:i') }} WIB<br>
                 @if($tiket->lokasi_atau_link)
                     <strong>Lokasi / Tautan:</strong> {{ $tiket->lokasi_atau_link }}
                 @endif

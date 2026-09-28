@@ -47,7 +47,7 @@
                                             <input type="hidden" name="barang_id[{{$i}}]" value="{{ $barang->id }}">
                                             <span class="ml-2">{{ $barang->nama_barang }} <small class="text-gray-500">(Stok: {{ $barang->stok_tersedia }})</small>
                                                 @unless($barang->boleh_dibawa_keluar)
-                                                    <small class="text-red-600 font-semibold">— tidak boleh dibawa keluar kampus</small>
+                                                    <small class="text-red-600 font-semibold">(tidak boleh dibawa keluar kampus)</small>
                                                 @endunless
                                             </span>
                                         </label>

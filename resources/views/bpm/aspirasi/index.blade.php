@@ -9,8 +9,8 @@
                 </div>
             @endif
 
-            <!-- Section 1: Aspirasi Bertiket Mahasiswa (Portal Layanan Baru) -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-8 border border-slate-200">
+            <!-- Aspirasi Bertiket Mahasiswa (Portal Layanan) -->
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-slate-200">
                 <div class="flex justify-between items-center mb-4">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900">Aspirasi Mahasiswa Bertiket (Portal Terpadu)</h3>
@@ -32,7 +32,7 @@
                         <tbody>
                             @forelse($tiketAspirasis as $t)
                                 <tr class="border-b hover:bg-slate-50/60 transition">
-                                    <td class="p-3 border font-mono font-bold text-xs text-blue-700">
+                                    <td class="p-3 border font-mono font-bold text-xs text-indigo-700">
                                         {{ $t->kode_tiket }}
                                     </td>
                                     <td class="p-3 border">
@@ -43,7 +43,7 @@
                                         <div class="font-bold text-slate-900 text-xs">{{ $t->judul }}</div>
                                         <div class="text-xs text-slate-600 mt-0.5">{{ Str::limit($t->isi, 90) }}</div>
                                         @if($t->catatan_bpm)
-                                            <div class="mt-1 text-[11px] text-blue-700 bg-blue-50 p-1.5 rounded">
+                                            <div class="mt-1 text-[11px] text-indigo-700 bg-indigo-50 p-1.5 rounded">
                                                 <strong>Catatan BPM:</strong> {{ $t->catatan_bpm }}
                                             </div>
                                         @endif
@@ -56,7 +56,7 @@
                                     <td class="p-3 border text-center space-y-1">
                                         @if($t->status !== 'diteruskan_ke_bkhm' && $t->status !== 'selesai')
                                             <button type="button" onclick="openTeruskanModal('{{ $t->id }}', '{{ $t->kode_tiket }}')"
-                                                class="px-2.5 py-1 text-xs font-bold rounded-lg text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 transition inline-block">
+                                                class="inline-flex items-center justify-center min-h-[44px] px-3 text-xs font-bold rounded-lg text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition">
                                                 Teruskan ke BKHM &rarr;
                                             </button>
                                         @else
@@ -83,113 +83,6 @@
                     {{ $tiketAspirasis->links() }}
                 </div>
             </div>
-
-            <!-- Section 2: Aspirasi Internal Akun Mahasiswa (Legacy) -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-slate-200">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-bold text-slate-800">Aspirasi Akun Terdaftar (Internal)</h3>
-                    <div class="flex gap-2">
-                        <select onchange="window.location.href='?status='+this.value" class="text-sm border-gray-300 rounded-md">
-                            <option value="">Semua Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="direkap">Direkap BPM</option>
-                            <option value="diproses">Diproses</option>
-                            <option value="ditindaklanjuti">Ditindaklanjuti</option>
-                            <option value="selesai">Selesai</option>
-                            <option value="ditolak">Ditolak</option>
-                            <option value="tidak_terbukti">Tidak Terbukti</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                <table class="min-w-full text-sm border">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="p-3 text-left border">Pengirim</th>
-                            <th class="p-3 text-left border">Kategori</th>
-                            <th class="p-3 text-left border">Judul & Isi</th>
-                            <th class="p-3 text-center border">Status</th>
-                            <th class="p-3 text-center border">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($aspirasis as $a)
-                        <tr class="border-b">
-                            <td class="p-3 border">
-                                {{ $a->user->name ?? 'Anonim' }}
-                                @if($a->anonim)
-                                    <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-gray-600">anonim ke publik</span>
-                                @endif
-                            </td>
-                            <td class="p-3 border">{{ $a->kategori }}</td>
-                            <td class="p-3 border">
-                                <div class="font-bold">{{ $a->judul }}</div>
-                                <div class="text-xs text-gray-600">{{ Str::limit($a->isi, 100) }}</div>
-                            </td>
-                            <td class="p-3 border text-center">
-                                @php
-                                    $statusClass = [
-                                        'pending' => 'bg-yellow-100 text-yellow-700',
-                                        'direkap' => 'bg-purple-100 text-purple-700',
-                                        'diproses' => 'bg-blue-100 text-blue-700',
-                                        'ditindaklanjuti' => 'bg-indigo-100 text-indigo-700',
-                                        'selesai' => 'bg-green-100 text-green-700',
-                                        'ditolak' => 'bg-red-100 text-red-700',
-                                        'tidak_terbukti' => 'bg-gray-200 text-gray-700',
-                                    ][$a->status] ?? 'bg-gray-100 text-gray-700';
-                                @endphp
-                                <span class="px-2 py-1 rounded-full text-xs {{ $statusClass }}">
-                                    {{ \Illuminate\Support\Str::of($a->status)->replace('_', ' ')->title() }}
-                                </span>
-                            </td>
-                            <td class="p-3 border text-center">
-                                <button onclick="openModal('{{ $a->id }}', '{{ $a->status }}', '{{ addslashes($a->catatan_bpm) }}')" class="text-indigo-600 hover:underline">Kelola</button>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="5" class="p-8 text-center text-gray-500 italic">Belum ada aspirasi atau keluhan yang masuk.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-                </div>
-                {{ $aspirasis->links() }}
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Kelola Aspirasi -->
-    <div id="modal-aspirasi" x-data="{ open: false, status: 'pending', catatan: '' }" x-show="open" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-        <div class="flex items-center justify-center min-h-screen px-4">
-            <div class="fixed inset-0 bg-black opacity-50"></div>
-            <div class="bg-white rounded-lg shadow-xl z-10 max-w-lg w-full p-6 relative">
-                <h3 class="text-lg font-bold mb-4">Kelola Aspirasi</h3>
-                <form method="POST" :action="'/bpm/aspirasi/update/'+id">
-                    @csrf @method('PUT')
-                    <div class="space-y-4">
-                        <div>
-                            <x-input-label for="status" :value="__('Status')" />
-                            <select name="status" id="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                                <option value="pending">Pending</option>
-                                <option value="direkap">Direkap BPM</option>
-                                <option value="diproses">Diproses</option>
-                                <option value="ditindaklanjuti">Ditindaklanjuti</option>
-                                <option value="selesai">Selesai</option>
-                                <option value="ditolak">Ditolak</option>
-                                <option value="tidak_terbukti">Tidak Terbukti</option>
-                            </select>
-                        </div>
-                        <div>
-                            <x-input-label for="catatan_bpm" :value="__('Catatan / Tanggapan BPM')" />
-                            <textarea name="catatan_bpm" id="catatan_bpm" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Berikan tanggapan resmi..."></textarea>
-                        </div>
-                    </div>
-                    <div class="flex justify-end mt-6 gap-2">
-                        <button type="button" onclick="closeModal()" class="px-4 py-2 text-gray-600">Batal</button>
-                        <x-primary-button>Simpan Perubahan</x-primary-button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 
@@ -205,7 +98,7 @@
                     <div class="space-y-4">
                         <div>
                             <x-input-label for="catatan_bpm_teruskan" :value="__('Catatan Rekomendasi BPM untuk BKHM *')" />
-                            <textarea name="catatan_bpm" id="catatan_bpm_teruskan" rows="4" required class="mt-1 block w-full border-gray-300 rounded-xl shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Tuliskan urgensi, rekomendasi tindak lanjut, atau dasar pertimbangan dari BPM..."></textarea>
+                            <textarea name="catatan_bpm" id="catatan_bpm_teruskan" rows="4" required class="mt-1 block w-full border-gray-300 rounded-xl shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Tuliskan urgensi, rekomendasi tindak lanjut, atau dasar pertimbangan dari BPM..."></textarea>
                         </div>
                     </div>
                     <div class="flex justify-end mt-6 gap-2">
@@ -218,19 +111,9 @@
     </div>
 
     <script>
-        function openModal(id, status, catatan) {
-            document.getElementById('modal-aspirasi').style.display = 'block';
-            document.getElementById('modal-aspirasi').querySelector('form').action = '/bpm/aspirasi/update/' + id;
-            document.getElementById('status').value = status;
-            document.getElementById('catatan_bpm').value = catatan;
-        }
-        function closeModal() {
-            document.getElementById('modal-aspirasi').style.display = 'none';
-        }
-
         function openTeruskanModal(id, kodeTiket) {
             document.getElementById('modal-teruskan').style.display = 'block';
-            document.getElementById('form-teruskan').action = '/bpm/aspirasi/' + id + '/teruskan';
+            document.getElementById('form-teruskan').action = '{{ url('bpm/aspirasi') }}/' + id + '/teruskan';
             document.getElementById('teruskan-kode-label').textContent = 'Tiket: ' + kodeTiket;
         }
         function closeTeruskanModal() {

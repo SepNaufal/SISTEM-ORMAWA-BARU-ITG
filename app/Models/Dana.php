@@ -15,6 +15,7 @@ class Dana extends Model
         'nominal_cair',
         'tanggal_cair',
         'catatan',
+        'bukti_transfer',
     ];
 
     protected $casts = [

@@ -13,7 +13,7 @@
                 <a href="{{ route('peminjaman.tempat.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
                     + Ajukan Peminjaman Ruangan
                 </a>
-                <a href="{{ route('peminjaman.barang.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <a href="{{ route('peminjaman.barang.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
                     + Ajukan Peminjaman Barang
                 </a>
             </div>

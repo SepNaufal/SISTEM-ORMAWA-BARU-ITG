@@ -26,7 +26,7 @@ class NavigationMenuTest extends TestCase
         return $user;
     }
 
-    public function test_bem_can_see_verifikasi_and_kurasi_menu(): void
+    public function test_bem_can_see_verifikasi_and_proker_menu(): void
     {
         $bem = $this->createUserWithRole('bem');
 
@@ -34,7 +34,7 @@ class NavigationMenuTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee(route('verifikasi.index'));
-        $response->assertSee(route('bem.kurasi.index'));
+        $response->assertSee(route('proker.index'));
         $response->assertSee(route('pengajuan.create'));
     }
 
@@ -58,6 +58,7 @@ class NavigationMenuTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee(route('verifikasi.index'));
+        $response->assertSee(route('bkhm.kurasi.index'));
         $response->assertSee(route('bkhm.konseling.index'));
         $response->assertSee(route('bkhm.tiket-aspirasi.index'));
         $response->assertSee(route('bkhm.export.excel'));
@@ -86,7 +87,7 @@ class NavigationMenuTest extends TestCase
         $response->assertSee(route('bendahara.export.pdf'));
     }
 
-    public function test_ormawa_can_see_prestasi_and_aspirasi_menu(): void
+    public function test_ormawa_can_see_prestasi_menu(): void
     {
         $ormawa = $this->createUserWithRole('ormawa');
 
@@ -95,6 +96,5 @@ class NavigationMenuTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee(route('pengajuan.create'));
         $response->assertSee(route('prestasi.index'));
-        $response->assertSee(route('aspirasi.mine'));
     }
 }

@@ -17,14 +17,7 @@ class TiketPublicController extends Controller
      */
     public function index()
     {
-        $showcasePrestasi = TiketLayanan::where('kategori', 'prestasi')
-            ->where('sub_kategori', 'lapor_prestasi')
-            ->where('tampil_ke_publik', true)
-            ->latest()
-            ->take(6)
-            ->get();
-
-        return view('public.tiket.index', compact('showcasePrestasi'));
+        return view('public.tiket.index');
     }
 
     /**
@@ -44,8 +37,8 @@ class TiketPublicController extends Controller
             'nim' => 'required|string|max:30',
             'nama_mahasiswa' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'no_hp' => 'nullable|string|max:25',
-            'prodi' => 'nullable|string|max:100',
+            'no_hp' => 'required|string|min:9|max:20',
+            'prodi' => 'required|string|in:Teknik Informatika,Sistem Informasi,Teknik Sipil,Teknik Industri,Arsitektur',
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
             'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
@@ -82,10 +75,12 @@ class TiketPublicController extends Controller
         // Notifikasi internal ke BPM
         NotifikasiService::kirimKeRole('bpm', 'Aspirasi baru masuk [Kode: ' . $kodeTiket . ']: "' . $tiket->judul . '".');
 
+        // Autorisasi sesi pelacakan tanpa mengekspos email di query URL
+        session()->put('verified_tiket_' . $kodeTiket, true);
+
         return redirect()->route('layanan.cek-status', [
             'kode' => $kodeTiket,
-            'email' => $tiket->email,
-        ])->with('success', 'Aspirasi Anda berhasil dikirim! Kode Tiket: ' . $kodeTiket . '. Kode ini juga telah dikirimkan ke email Anda.');
+        ])->with('success', 'Aspirasi Anda berhasil dikirim! Kode Tiket: ' . $kodeTiket . '. Simpan kode ini untuk melacak tindak lanjut.');
     }
 
     /**
@@ -105,8 +100,8 @@ class TiketPublicController extends Controller
             'nim' => 'required|string|max:30',
             'nama_mahasiswa' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'no_hp' => 'nullable|string|max:25',
-            'prodi' => 'nullable|string|max:100',
+            'no_hp' => 'required|string|min:9|max:20',
+            'prodi' => 'required|string|in:Teknik Informatika,Sistem Informasi,Teknik Sipil,Teknik Industri,Arsitektur',
             'topik_konseling' => 'required|string|max:100',
             'metode_konseling' => 'required|string|max:50',
             'deskripsi_masalah' => 'required|string',
@@ -143,10 +138,12 @@ class TiketPublicController extends Controller
         // Notifikasi tertutup hanya ke BKHM
         NotifikasiService::kirimKeRole('bkhm', 'Permohonan konseling personal baru [Kode: ' . $kodeTiket . '] masuk secara rahasia.');
 
+        // Autorisasi sesi pelacakan tanpa mengekspos email di query URL
+        session()->put('verified_tiket_' . $kodeTiket, true);
+
         return redirect()->route('layanan.cek-status', [
             'kode' => $kodeTiket,
-            'email' => $tiket->email,
-        ])->with('success', 'Permohonan konseling Anda berhasil dikirim secara rahasia! Kode Tiket: ' . $kodeTiket . '. Staf BKHM akan merespons melalui sistem dan email Anda.');
+        ])->with('success', 'Permohonan konseling Anda berhasil dikirim secara rahasia! Kode Tiket: ' . $kodeTiket . '. Mohon simpan kode ini untuk memantau jadwal tanggapan.');
     }
 
     /**
@@ -166,19 +163,32 @@ class TiketPublicController extends Controller
             'nim' => 'required|string|max:30',
             'nama_mahasiswa' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'no_hp' => 'nullable|string|max:25',
-            'prodi' => 'nullable|string|max:100',
+            'no_hp' => 'required|string|min:9|max:20',
+            'prodi' => 'required|string|in:Teknik Informatika,Sistem Informasi,Teknik Sipil,Teknik Industri,Arsitektur',
             'sub_kategori' => 'required|in:lapor_prestasi,pengajuan_dana_delegasi',
             'nama_kegiatan' => 'required|string|max:255',
             'penyelenggara' => 'required|string|max:255',
+            'url_penyelenggara' => 'nullable|url|max:500',
             'tingkat' => 'required|string|max:50',
             'capaian' => 'nullable|string|max:100',
             'tanggal_kegiatan' => 'nullable|date',
+            'tanggal_mulai' => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'estimasi_biaya' => 'nullable|numeric|min:0',
             'lampiran_bukti' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'foto_penyerahan' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
         ]);
 
+        $tanggalMulai = $validated['tanggal_mulai'] ?? ($validated['tanggal_kegiatan'] ?? null);
+        $tanggalSelesai = $validated['tanggal_selesai'] ?? $tanggalMulai;
+        $tanggalKegiatan = $tanggalMulai;
+
         $lampiranPath = $request->file('lampiran_bukti')->store('tiket-prestasi', 'local');
+        $fotoPenyerahanPath = null;
+        if ($request->hasFile('foto_penyerahan')) {
+            $fotoPenyerahanPath = $request->file('foto_penyerahan')->store('tiket-prestasi-foto', 'public');
+        }
+
         $kodeTiket = TiketLayanan::generateKodeTiket();
 
         $tiket = TiketLayanan::create([
@@ -192,11 +202,15 @@ class TiketPublicController extends Controller
             'prodi' => $validated['prodi'] ?? null,
             'nama_kegiatan' => $validated['nama_kegiatan'],
             'penyelenggara' => $validated['penyelenggara'],
+            'url_penyelenggara' => $validated['url_penyelenggara'] ?? null,
             'tingkat' => $validated['tingkat'],
             'capaian' => $validated['capaian'] ?? null,
-            'tanggal_kegiatan' => $validated['tanggal_kegiatan'] ?? null,
+            'tanggal_kegiatan' => $tanggalKegiatan,
+            'tanggal_mulai' => $tanggalMulai,
+            'tanggal_selesai' => $tanggalSelesai,
             'estimasi_biaya' => $validated['estimasi_biaya'] ?? null,
             'lampiran_bukti' => $lampiranPath,
+            'foto_penyerahan' => $fotoPenyerahanPath,
             'status' => 'pending',
             'tampil_ke_publik' => false,
         ]);
@@ -212,14 +226,16 @@ class TiketPublicController extends Controller
             ? 'Pelaporan prestasi Anda berhasil dikirim! Kode Tiket: ' . $kodeTiket . '.'
             : 'Pengajuan bantuan delegasi lomba Anda berhasil dikirim ke BKHM! Kode Tiket: ' . $kodeTiket . '.';
 
+        // Autorisasi sesi pelacakan tanpa mengekspos email di query URL
+        session()->put('verified_tiket_' . $kodeTiket, true);
+
         return redirect()->route('layanan.cek-status', [
             'kode' => $kodeTiket,
-            'email' => $tiket->email,
         ])->with('success', $pesan);
     }
 
     /**
-     * Halaman Cek Status Tiket Publik (Kode Tiket + Alamat Email)
+     * Halaman Cek Status Tiket Publik (GET: Form atau Tampilan Terverifikasi)
      */
     public function tracking(Request $request)
     {
@@ -227,24 +243,42 @@ class TiketPublicController extends Controller
         $email = trim((string) $request->input('email'));
         $tiket = null;
 
-        if ($kode && $email) {
-            $tiket = TiketLayanan::where('kode_tiket', $kode)
-                ->where('email', $email)
-                ->first();
+        // 1. Jika pengguna baru submit form atau memiliki session tiket terverifikasi
+        if ($kode) {
+            $isSessionVerified = session()->get('verified_tiket_' . $kode, false);
 
-            if (! $tiket) {
+            if ($isSessionVerified) {
+                $tiket = TiketLayanan::where('kode_tiket', $kode)->first();
+                if ($tiket) {
+                    return view('public.tiket.tracking', [
+                        'tiket' => $tiket,
+                        'searched' => true,
+                        'errorMessage' => null,
+                    ]);
+                }
+            }
+
+            // Jika ada query email (legacy / fallback)
+            if ($email) {
+                $tiket = TiketLayanan::where('kode_tiket', $kode)
+                    ->where('email', $email)
+                    ->first();
+
+                if ($tiket) {
+                    session()->put('verified_tiket_' . $kode, true);
+                    return view('public.tiket.tracking', [
+                        'tiket' => $tiket,
+                        'searched' => true,
+                        'errorMessage' => null,
+                    ]);
+                }
+
                 return view('public.tiket.tracking', [
                     'tiket' => null,
                     'searched' => true,
-                    'errorMessage' => 'Tiket dengan Kode "' . $kode . '" dan Email "' . $email . '" tidak ditemukan. Pastikan data yang dimasukkan sesuai saat pengajuan.',
+                    'errorMessage' => 'Kombinasi Kode Tiket dan Email tidak ditemukan. Pastikan data yang dimasukkan sesuai saat pengajuan.',
                 ]);
             }
-
-            return view('public.tiket.tracking', [
-                'tiket' => $tiket,
-                'searched' => true,
-                'errorMessage' => null,
-            ]);
         }
 
         return view('public.tiket.tracking', [
@@ -255,17 +289,47 @@ class TiketPublicController extends Controller
     }
 
     /**
+     * Verifikasi Akses Tiket Melalui POST (Mencegah Kebocoran Email di URL & Proteksi Brute-Force)
+     */
+    public function trackingVerify(Request $request)
+    {
+        $validated = $request->validate([
+            'kode' => 'required|string|max:50',
+            'email' => 'required|email|max:255',
+        ]);
+
+        $kode = trim($validated['kode']);
+        $email = trim($validated['email']);
+
+        $tiket = TiketLayanan::where('kode_tiket', $kode)
+            ->where('email', $email)
+            ->first();
+
+        if (! $tiket) {
+            return back()->withInput()->with('errorMessage', 'Kombinasi Kode Tiket dan Email tidak cocok atau tidak terdaftar.');
+        }
+
+        // Tandai tiket terverifikasi dalam session browser
+        session()->put('verified_tiket_' . $kode, true);
+
+        return redirect()->route('layanan.cek-status', ['kode' => $kode]);
+    }
+
+    /**
      * Showcase Prestasi Publik (Hall of Fame)
      */
     public function showcasePrestasi()
     {
-        $prestasis = TiketLayanan::where('kategori', 'prestasi')
+        $base = TiketLayanan::where('kategori', 'prestasi')
             ->where('sub_kategori', 'lapor_prestasi')
-            ->where('tampil_ke_publik', true)
-            ->latest()
-            ->paginate(12);
+            ->where('tampil_ke_publik', true);
 
-        return view('public.prestasi.showcase', compact('prestasis'));
+        $prestasis = (clone $base)->latest()->paginate(12);
+
+        $totalNasional = (clone $base)->where('tingkat', 'Nasional')->count();
+        $totalInternasional = (clone $base)->where('tingkat', 'Internasional')->count();
+
+        return view('public.prestasi.showcase', compact('prestasis', 'totalNasional', 'totalInternasional'));
     }
 
     /**
@@ -273,6 +337,15 @@ class TiketPublicController extends Controller
      */
     public function unduhLampiran(TiketLayanan $tiket, Request $request): StreamedResponse
     {
+        $type = $request->query('type');
+        if ($type === 'foto' && $tiket->foto_penyerahan) {
+            $filePath = $tiket->foto_penyerahan;
+            if (Storage::disk('public')->exists($filePath)) {
+                $ext = pathinfo($filePath, PATHINFO_EXTENSION) ?: 'jpg';
+                return Storage::disk('public')->download($filePath, 'foto-penyerahan-' . $tiket->kode_tiket . '.' . $ext);
+            }
+        }
+
         $filePath = $tiket->lampiran ?? $tiket->lampiran_bukti;
         abort_if(! $filePath, 404, 'File lampiran tidak ditemukan.');
 
@@ -327,9 +400,10 @@ class TiketPublicController extends Controller
             ($request->filled('catatan') ? ' - Catatan: "' . $request->catatan . '"' : '')
         );
 
+        session()->put('verified_tiket_' . $tiket->kode_tiket, true);
+
         return redirect()->route('layanan.cek-status', [
             'kode' => $tiket->kode_tiket,
-            'email' => $tiket->email,
         ])->with('success', 'Konfirmasi kehadiran Anda berhasil disimpan dan diteruskan ke konselor BKHM.');
     }
 }

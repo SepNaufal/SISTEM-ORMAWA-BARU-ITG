@@ -1,10 +1,5 @@
 @php
     $m = $letter->metadata ?? [];
-    $penanda = $m['penandatangan'] ?? 'ketua';
-    $owner = $letter->user ?? Auth::user();
-    $namaPenanda = $penanda === 'sekretaris'
-        ? ($owner->nama_sekretaris ?? $owner->name)
-        : ($penanda === 'bendahara' ? ($owner->nama_bendahara ?? $owner->name) : ($owner->nama_ketua ?? $owner->name));
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -87,13 +82,10 @@
     @endif
 
     <div style="margin-top: 50px; text-align: right;">Garut, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</div>
-    <div style="margin-top: 20px;">
-        <div style="float: right; text-align: center; width: 250px;">
-            <div>{{ ucfirst($penanda) }},</div>
-            <div style="height: 80px;"></div>
-            <div style="font-weight: bold; text-decoration: underline;">{{ $namaPenanda }}</div>
-        </div>
-        <div style="clear: both;"></div>
-    </div>
+
+    @include('generator.partials.penandatangan', [
+        'penandatanganList' => $letter->penandatangan_list,
+        'signatures' => $letter->signatures_by_index,
+    ])
 </body>
 </html>

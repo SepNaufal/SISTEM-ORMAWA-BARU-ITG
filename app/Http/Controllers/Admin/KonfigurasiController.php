@@ -23,13 +23,25 @@ class KonfigurasiController extends Controller
             'kop_baris2' => 'nullable|string|max:255',
             'kop_baris3' => 'nullable|string|max:255',
             'kop_baris4' => 'nullable|string|max:255',
+            'wr3_nama' => 'nullable|string|max:255',
+            'wr3_nidn' => 'nullable|string|max:50',
+            'wr3_jabatan' => 'nullable|string|max:255',
+            'bkhm_nama' => 'nullable|string|max:255',
+            'bkhm_nidn' => 'nullable|string|max:50',
+            'bkhm_jabatan' => 'nullable|string|max:255',
+            'bendahara_nama' => 'nullable|string|max:255',
+            'bendahara_nidn' => 'nullable|string|max:50',
+            'bendahara_jabatan' => 'nullable|string|max:255',
             'logo_sistem' => 'nullable|image|max:2048',
             'kop_logo' => 'nullable|image|max:2048',
         ]);
 
         // Text configurations
         $textConfigs = [
-            'nama_aplikasi', 'kop_baris1', 'kop_baris2', 'kop_baris3', 'kop_baris4'
+            'nama_aplikasi', 'kop_baris1', 'kop_baris2', 'kop_baris3', 'kop_baris4',
+            'wr3_nama', 'wr3_nidn', 'wr3_jabatan',
+            'bkhm_nama', 'bkhm_nidn', 'bkhm_jabatan',
+            'bendahara_nama', 'bendahara_nidn', 'bendahara_jabatan',
         ];
 
         foreach ($textConfigs as $key) {

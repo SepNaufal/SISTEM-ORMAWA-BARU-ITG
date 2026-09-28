@@ -343,6 +343,8 @@ class PeminjamanController extends Controller
 
         if ($status === 'ditolak') {
             $peminjaman->catatan_penolakan = $request->catatan;
+        } else {
+            \App\Services\DigitalSignatureService::sign($peminjaman, Auth::user(), $role);
         }
 
         $peminjaman->save();
@@ -374,6 +376,8 @@ class PeminjamanController extends Controller
 
         if ($status === 'ditolak') {
             $peminjaman->catatan_penolakan = $request->catatan;
+        } else {
+            \App\Services\DigitalSignatureService::sign($peminjaman, Auth::user(), $role);
         }
 
         $peminjaman->save();
@@ -404,6 +408,52 @@ class PeminjamanController extends Controller
         $peminjaman->save();
 
         return redirect()->back()->with('success', 'Barang berhasil divalidasi kembali dan stok diperbarui.');
+    }
+
+    public function cetakTempat(PeminjamanTempat $peminjaman)
+    {
+        if ($peminjaman->user_id !== Auth::id() && !Auth::user()->hasAnyRole(['admin', 'bkhm', 'sarpras'])) {
+            abort(403);
+        }
+
+        $peminjaman->load(['user', 'ruangan']);
+        $konfig = \App\Models\Konfigurasi::pluck('nilai_konfigurasi', 'nama_konfigurasi');
+
+        $signature = \App\Models\TandaTanganDigital::where('signable_type', get_class($peminjaman))
+            ->where('signable_id', $peminjaman->id)
+            ->latest()
+            ->first();
+
+        if (! $signature && in_array($peminjaman->status_akhir, ['Selesai / Disetujui', 'Disetujui'])) {
+            $signature = \App\Services\DigitalSignatureService::sign($peminjaman, Auth::user(), 'sarpras');
+        }
+
+        $qrCodeDataUri = $signature ? \App\Services\DigitalSignatureService::generateQrCodeDataUri($signature->verification_url, 120) : null;
+
+        return view('peminjaman.cetak_tempat', compact('peminjaman', 'konfig', 'signature', 'qrCodeDataUri'));
+    }
+
+    public function cetakBarang(PeminjamanBarang $peminjaman)
+    {
+        if ($peminjaman->user_id !== Auth::id() && !Auth::user()->hasAnyRole(['admin', 'bkhm', 'sarpras'])) {
+            abort(403);
+        }
+
+        $peminjaman->load('user');
+        $konfig = \App\Models\Konfigurasi::pluck('nilai_konfigurasi', 'nama_konfigurasi');
+
+        $signature = \App\Models\TandaTanganDigital::where('signable_type', get_class($peminjaman))
+            ->where('signable_id', $peminjaman->id)
+            ->latest()
+            ->first();
+
+        if (! $signature && in_array($peminjaman->status_akhir, ['Disetujui', 'Sedang Digunakan', 'Dikembalikan'])) {
+            $signature = \App\Services\DigitalSignatureService::sign($peminjaman, Auth::user(), 'sarpras');
+        }
+
+        $qrCodeDataUri = $signature ? \App\Services\DigitalSignatureService::generateQrCodeDataUri($signature->verification_url, 120) : null;
+
+        return view('peminjaman.cetak_barang', compact('peminjaman', 'konfig', 'signature', 'qrCodeDataUri'));
     }
 }
 

@@ -28,10 +28,10 @@ class InformasiController extends Controller
 
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->hasRole('ormawa')) {
+            if ($user->hasAnyRole(['ormawa', 'bem', 'bpm'])) {
                 $pengumumanSaya = Pengumuman::where('user_id', $user->id)->latest()->get();
             }
-            if ($user->hasRole('bem') || $user->hasRole('admin')) {
+            if ($user->hasRole('bkhm') || $user->hasRole('admin')) {
                 $antreanKurasiCount = Pengumuman::pendingKurasi()->count();
             }
         }
@@ -42,7 +42,7 @@ class InformasiController extends Controller
     public function storePengumuman(Request $request)
     {
         $user = Auth::user();
-        abort_unless($user->hasAnyRole(['bem', 'bkhm', 'ormawa', 'admin']), 403);
+        abort_unless($user->hasAnyRole(['bem', 'bpm', 'bkhm', 'ormawa', 'admin']), 403);
 
         $request->validate([
             'judul' => 'required|string|max:255',
@@ -64,20 +64,18 @@ class InformasiController extends Controller
             $lampiranPath = $request->file('file_lampiran')->store('pengumuman', 'local');
         }
 
-        // Tentukan status & kategori sesuai role pengunggah (Saran A)
+        // Tentukan status & kategori:
+        // BKHM dan Admin menerbitkan langsung (Humas & Otoritas Resmi)
+        // Lembaga mahasiswa (Ormawa HIMA/UKM, BEM, BPM) masuk antrean kurasi BKHM
         if ($user->hasRole('bkhm') || $user->hasRole('admin')) {
             $status = 'published';
             $kategori = $request->kategori ?: 'resmi_kampus';
             $flashMsg = 'Pengumuman resmi kampus berhasil diterbitkan.';
-        } elseif ($user->hasRole('bem')) {
-            $status = 'published';
-            $kategori = $request->kategori ?: 'kegiatan_kemahasiswaan';
-            $flashMsg = 'Pengumuman BEM berhasil diterbitkan.';
         } else {
-            // HIMA & UKM (ormawa): masuk antrean kurasi BEM
+            // ormawa, bem, bpm
             $status = 'pending_kurasi';
             $kategori = 'kegiatan_kemahasiswaan';
-            $flashMsg = 'Pengajuan berita berhasil dikirim dan menunggu kurasi BEM sebelum diterbitkan.';
+            $flashMsg = 'Pengajuan berita berhasil dikirim dan menunggu kurasi BKHM sebelum diterbitkan.';
         }
 
         Pengumuman::create([
@@ -96,8 +94,8 @@ class InformasiController extends Controller
             // FR-022: pengumuman resmi broadcast ke semua pengguna
             \App\Services\NotifikasiService::kirimKeSemua('Pengumuman baru: "' . $request->judul . '".');
         } else {
-            // Pengajuan HIMA/UKM hanya memberitahu pengurus BEM (tanpa spam ke semua user)
-            \App\Services\NotifikasiService::kirimKeRole('bem', 'Pengajuan berita baru dari ' . $user->name . ': "' . $request->judul . '". Silakan periksa di antrean kurasi BEM.');
+            // Pengajuan dari ormawa / bem / bpm masuk ke antrean kurasi BKHM
+            \App\Services\NotifikasiService::kirimKeRole('bkhm', 'Pengajuan berita baru dari ' . $user->name . ': "' . $request->judul . '". Silakan periksa di antrean kurasi BKHM.');
         }
 
         return redirect()->route('informasi.index')->with('success', $flashMsg)->with('status', $flashMsg);
@@ -105,15 +103,15 @@ class InformasiController extends Controller
 
     public function kurasiIndex()
     {
-        abort_unless(Auth::user()->hasAnyRole(['bem', 'admin']), 403);
+        abort_unless(Auth::user()->hasAnyRole(['bkhm', 'admin']), 403);
 
         $pengumumans = Pengumuman::pendingKurasi()->with('user')->latest()->paginate(15);
-        return view('bem.kurasi.index', compact('pengumumans'));
+        return view('bkhm.kurasi.index', compact('pengumumans'));
     }
 
     public function kurasiApprove(Pengumuman $pengumuman)
     {
-        abort_unless(Auth::user()->hasAnyRole(['bem', 'admin']), 403);
+        abort_unless(Auth::user()->hasAnyRole(['bkhm', 'admin']), 403);
 
         $pengumuman->update([
             'status' => 'published',
@@ -122,16 +120,16 @@ class InformasiController extends Controller
 
         \App\Services\NotifikasiService::kirim(
             $pengumuman->user_id,
-            'Berita kegiatan Anda "' . $pengumuman->judul . '" telah disetujui BEM dan resmi diterbitkan di Pusat Informasi.'
+            'Berita kegiatan Anda "' . $pengumuman->judul . '" telah disetujui BKHM dan resmi diterbitkan di Pusat Informasi.'
         );
 
         $msg = 'Pengumuman / berita telah disetujui dan diterbitkan.';
-        return redirect()->route('bem.kurasi.index')->with('success', $msg)->with('status', $msg);
+        return redirect()->route('bkhm.kurasi.index')->with('success', $msg)->with('status', $msg);
     }
 
     public function kurasiReject(Request $request, Pengumuman $pengumuman)
     {
-        abort_unless(Auth::user()->hasAnyRole(['bem', 'admin']), 403);
+        abort_unless(Auth::user()->hasAnyRole(['bkhm', 'admin']), 403);
 
         $request->validate([
             'catatan_kurasi' => 'required|string',
@@ -144,11 +142,11 @@ class InformasiController extends Controller
 
         \App\Services\NotifikasiService::kirim(
             $pengumuman->user_id,
-            'Pengajuan berita "' . $pengumuman->judul . '" ditolak oleh BEM dengan catatan: ' . $request->catatan_kurasi
+            'Pengajuan berita "' . $pengumuman->judul . '" ditolak oleh BKHM dengan catatan: ' . $request->catatan_kurasi
         );
 
         $msg = 'Pengumuman / berita telah ditolak.';
-        return redirect()->route('bem.kurasi.index')->with('success', $msg)->with('status', $msg);
+        return redirect()->route('bkhm.kurasi.index')->with('success', $msg)->with('status', $msg);
     }
 
     /**
@@ -156,10 +154,10 @@ class InformasiController extends Controller
      */
     public function show(Pengumuman $pengumuman)
     {
-        // Jika belum published, hanya penulis, BEM, BKHM, atau Admin yang boleh melihat pratinjau
+        // Jika belum published, hanya penulis, BEM, BPM, BKHM, atau Admin yang boleh melihat pratinjau
         if ($pengumuman->status !== 'published') {
             $canPreview = Auth::check() && (
-                Auth::user()->hasAnyRole(['bem', 'bkhm', 'admin']) ||
+                Auth::user()->hasAnyRole(['bem', 'bpm', 'bkhm', 'admin']) ||
                 Auth::id() === $pengumuman->user_id
             );
             abort_unless($canPreview, 404, 'Informasi tidak ditemukan atau belum diterbitkan.');

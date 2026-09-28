@@ -26,7 +26,7 @@ class KonselingDanSarprasPenyempurnaanTest extends TestCase
 
     private function createBkhm(): User
     {
-        $user = User::factory()->create(['name' => 'Staf BKHM']);
+        $user = User::factory()->create(['name' => 'BKHM']);
         $user->assignRole('bkhm');
         return $user;
     }
@@ -100,7 +100,6 @@ class KonselingDanSarprasPenyempurnaanTest extends TestCase
 
         $response->assertRedirect(route('layanan.cek-status', [
             'kode' => $tiket->kode_tiket,
-            'email' => $tiket->email,
         ]));
 
         $tiket->refresh();

@@ -12,7 +12,7 @@
 
     <p>Halo, <strong>{{ $tiket->nama_mahasiswa }}</strong>,</p>
 
-    <p>Terima kasih telah mempercayai BKHM ITG. Permohonan konseling Anda (Kode Tiket: <strong>{{ $tiket->kode_tiket }}</strong>) telah ditindaklanjuti oleh konselor/staf BKHM dan telah ditentukan jadwal sesinya.</p>
+    <p>Terima kasih telah mempercayai BKHM ITG. Permohonan konseling Anda (Kode Tiket: <strong>{{ $tiket->kode_tiket }}</strong>) telah ditindaklanjuti oleh konselor/BKHM dan telah ditentukan jadwal sesinya.</p>
 
     <div style="background-color: #f5f3ff; border-left: 4px solid #7c3aed; padding: 16px; margin: 20px 0; border-radius: 6px;">
         <h3 style="margin: 0 0 10px 0; color: #5b21b6; font-size: 16px;">Rincian Jadwal Temu Sesi Konseling</h3>

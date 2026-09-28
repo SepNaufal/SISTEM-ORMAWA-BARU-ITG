@@ -10,8 +10,8 @@
             <div class="flex justify-between mb-4">
                 <a href="{{ route('generator.archive') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Kembali ke Arsip</a>
                 <div class="flex gap-2">
-                    <a href="{{ route('generator.lpj.pdf', $lpj) }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">⬇️ Unduh PDF</a>
-                    <button onclick="window.print()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">🖨️ Cetak</button>
+                    <a href="{{ route('generator.lpj.pdf', $lpj) }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Unduh PDF</a>
+                    <button onclick="window.print()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Cetak</button>
                 </div>
             </div>
 
@@ -86,18 +86,10 @@
                     Garut, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
                 </div>
 
-                <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-                    <div style="text-align: center; width: 200px;">
-                        <div style="font-weight: bold;">Ketua Pelaksana,</div>
-                        <div style="height: 80px;"></div>
-                        <div style="font-weight: bold; text-decoration: underline;">{{ Auth::user()->nama_ketua }}</div>
-                    </div>
-                    <div style="text-align: center; width: 200px;">
-                        <div style="font-weight: bold;">Sekretaris,</div>
-                        <div style="height: 80px;"></div>
-                        <div style="font-weight: bold; text-decoration: underline;">{{ Auth::user()->nama_sekretaris }}</div>
-                    </div>
-                </div>
+                @include('generator.partials.penandatangan', [
+                    'penandatanganList' => $lpj->penandatangan_list,
+                    'signatures' => $lpj->signatures_by_index,
+                ])
             </div>
         </div>
     </div>

@@ -4,7 +4,7 @@
             <h2 class="font-bold text-xl text-slate-800 leading-tight">
                 Eskalasi Aspirasi Mahasiswa (dari BPM)
             </h2>
-            <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">
                 Pusat Kebijakan Kemahasiswaan
             </span>
         </div>
@@ -47,7 +47,7 @@
                                 <h4 class="font-bold text-slate-900 text-base">{{ $tiket->judul }}</h4>
                                 <div class="text-xs text-slate-500">
                                     Diajukan oleh: <span class="font-semibold text-slate-700">{{ $tiket->nama_mahasiswa }}</span> ({{ $tiket->nim }} &bull; {{ $tiket->prodi ?? 'ITG' }})
-                                    &bull; <a href="mailto:{{ $tiket->email }}" class="text-blue-600 hover:underline">{{ $tiket->email }}</a>
+                                    &bull; <a href="mailto:{{ $tiket->email }}" class="text-indigo-600 hover:underline">{{ $tiket->email }}</a>
                                 </div>
                             </div>
 
@@ -56,8 +56,8 @@
                             </div>
 
                             @if ($tiket->catatan_bpm)
-                                <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-3 text-xs text-blue-900">
-                                    <strong class="font-semibold block mb-0.5 text-blue-950">📌 Catatan Rekomendasi BPM:</strong>
+                                <div class="bg-indigo-50/70 border border-indigo-200 rounded-xl p-3 text-xs text-indigo-900">
+                                    <strong class="font-semibold block mb-0.5 text-indigo-950">📌 Catatan Rekomendasi BPM:</strong>
                                     {{ $tiket->catatan_bpm }}
                                 </div>
                             @endif
@@ -70,25 +70,27 @@
                             @endif
 
                             <!-- Form Tanggapan BKHM -->
-                            <form action="{{ route('bkhm.tiket-aspirasi.update', $tiket) }}" method="POST" class="pt-3 border-t border-slate-100 flex flex-wrap items-end gap-3">
+                            <form action="{{ route('bkhm.tiket-aspirasi.update', $tiket) }}" method="POST" class="pt-3 border-t border-slate-100 space-y-3">
                                 @csrf
-                                <div class="flex-1 min-w-[240px]">
+                                <div>
                                     <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Tanggapan / Catatan Kebijakan BKHM</label>
-                                    <input type="text" name="catatan_bkhm" value="{{ old('catatan_bkhm', $tiket->catatan_bkhm) }}" required placeholder="Tuliskan keputusan atau langkah tindak lanjut..."
-                                        class="w-full text-xs rounded-xl border-slate-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-2 px-3">
+                                    <textarea name="catatan_bkhm" rows="2" required placeholder="Tuliskan keputusan atau langkah tindak lanjut..."
+                                        class="w-full text-xs rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm py-2 px-3">{{ old('catatan_bkhm', $tiket->catatan_bkhm) }}</textarea>
                                 </div>
-                                <div class="w-48">
-                                    <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Status Penanganan</label>
-                                    <select name="status" class="w-full text-xs rounded-xl border-slate-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-2 px-3">
-                                        <option value="diproses_bkhm" {{ $tiket->status === 'diproses_bkhm' ? 'selected' : '' }}>Diproses BKHM</option>
-                                        <option value="ditindaklanjuti" {{ $tiket->status === 'ditindaklanjuti' ? 'selected' : '' }}>Ditindaklanjuti</option>
-                                        <option value="selesai" {{ $tiket->status === 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                        <option value="ditolak" {{ $tiket->status === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                                    </select>
+                                <div class="flex flex-wrap items-center justify-between gap-3">
+                                    <div class="w-48">
+                                        <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Status Penanganan</label>
+                                        <select name="status" class="w-full text-xs rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm py-2 px-3">
+                                            <option value="diproses_bkhm" {{ $tiket->status === 'diproses_bkhm' ? 'selected' : '' }}>Diproses BKHM</option>
+                                            <option value="ditindaklanjuti" {{ $tiket->status === 'ditindaklanjuti' ? 'selected' : '' }}>Ditindaklanjuti</option>
+                                            <option value="selesai" {{ $tiket->status === 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                            <option value="ditolak" {{ $tiket->status === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition shadow-sm">
+                                        Perbarui & Emailkan
+                                    </button>
                                 </div>
-                                <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition shadow-sm">
-                                    Perbarui & Emailkan
-                                </button>
                             </form>
                         </div>
                     @empty

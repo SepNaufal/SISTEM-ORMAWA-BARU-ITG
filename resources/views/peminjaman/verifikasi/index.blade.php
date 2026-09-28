@@ -58,8 +58,8 @@
                                         ">
                                             @csrf
                                             <input type="hidden" name="catatan" value="">
-                                            <button type="submit" name="aksi" value="setuju" class="text-xs bg-green-600 hover:bg-green-700 text-white py-1 px-3 rounded">Setuju</button>
-                                            <button type="submit" name="aksi" value="tolak" class="text-xs bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded">Tolak</button>
+                                            <button type="submit" name="aksi" value="setuju" class="px-3 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-md shadow-sm transition-colors min-h-[32px]">Setujui</button>
+                                            <button type="submit" name="aksi" value="tolak" class="px-3 py-1.5 text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white rounded-md shadow-sm transition-colors min-h-[32px]">Tolak</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -75,7 +75,7 @@
 
             <!-- Antrian Verifikasi Barang -->
             @hasanyrole('bkhm|sarpras')
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-4 border-blue-500">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-4 border-indigo-500">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-lg font-bold mb-4 border-b pb-2">Antrian Peminjaman Barang</h3>
                     
@@ -127,8 +127,8 @@
                                         ">
                                             @csrf
                                             <input type="hidden" name="catatan" value="">
-                                            <button type="submit" name="aksi" value="setuju" class="text-xs bg-green-600 hover:bg-green-700 text-white py-1 px-3 rounded">Setuju</button>
-                                            <button type="submit" name="aksi" value="tolak" class="text-xs bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded">Tolak</button>
+                                            <button type="submit" name="aksi" value="setuju" class="px-3 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-md shadow-sm transition-colors min-h-[32px]">Setujui</button>
+                                            <button type="submit" name="aksi" value="tolak" class="px-3 py-1.5 text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white rounded-md shadow-sm transition-colors min-h-[32px]">Tolak</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -177,7 +177,7 @@
                                     <td class="py-3 px-4 text-center">
                                         <form action="{{ route('peminjaman.barang.kembali', $p) }}" method="POST" onsubmit="return confirm('Validasi barang sudah dikembalikan? Stok akan dikembalikan.')">
                                             @csrf
-                                            <button type="submit" class="text-xs bg-amber-600 hover:bg-amber-700 text-white py-1 px-3 rounded">Validasi Kembali</button>
+                                            <button type="submit" class="px-3 py-1.5 text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white rounded-md shadow-sm transition-colors min-h-[32px]">Validasi Pengembalian</button>
                                         </form>
                                     </td>
                                 </tr>

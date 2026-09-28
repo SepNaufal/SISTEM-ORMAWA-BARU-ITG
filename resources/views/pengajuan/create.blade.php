@@ -8,17 +8,65 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if(isset($blocking) && $blocking)
-                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded shadow mb-6">
-                    <div class="flex">
-                        <div class="flex-shrink-0"><svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
-                        <div class="ml-3">
-                            <h3 class="text-sm font-bold text-yellow-800">Pengajuan Ditangguhkan</h3>
-                            <p class="text-sm text-yellow-700 mt-1">Anda belum bisa mengajukan proposal baru karena masih ada proposal/LPJ yang belum selesai diproses atau ditolak.</p>
-                            <div class="mt-3 text-sm bg-white p-3 rounded border">
-                                <div>Nama Kegiatan: <span class="font-semibold">{{ $blocking->nama_kegiatan }}</span></div>
-                                <div>Status Saat Ini: <span class="font-semibold">{{ $blocking->state->label ?? $blocking->state->name }}</span></div>
+                @php
+                    $isDanaCair = $blocking->state->name === 'funds_disbursed';
+                    $isLpjReview = in_array($blocking->state->name, ['lpj_submitted', 'lpj_wr3_review']);
+                @endphp
+                <div class="{{ $isDanaCair ? 'bg-amber-50 border-l-4 border-amber-500' : ($isLpjReview ? 'bg-indigo-50 border-l-4 border-indigo-500' : 'bg-yellow-50 border-l-4 border-yellow-400') }} p-6 rounded-lg shadow mb-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-0.5">
+                            @if($isDanaCair)
+                                <svg class="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            @elseif($isLpjReview)
+                                <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            @else
+                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                            @endif
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <h3 class="text-base font-bold {{ $isDanaCair ? 'text-amber-900' : ($isLpjReview ? 'text-indigo-900' : 'text-yellow-800') }}">
+                                @if($isDanaCair)
+                                    Pengajuan Ditangguhkan: Menunggu Unggah Dokumen LPJ
+                                @elseif($isLpjReview)
+                                    Pengajuan Ditangguhkan: Dokumen LPJ Sedang Ditinjau
+                                @else
+                                    Pengajuan Ditangguhkan: Menunggu Penyelesaian Kegiatan Sebelumnya
+                                @endif
+                            </h3>
+                            
+                            <p class="text-sm {{ $isDanaCair ? 'text-amber-800' : ($isLpjReview ? 'text-indigo-800' : 'text-yellow-700') }} mt-1">
+                                @if($isDanaCair)
+                                    Dana kegiatan sebelumnya telah dicairkan oleh Bendahara. Sesuai ketentuan kepatuhan keuangan kemahasiswaan ITG, Anda <strong>wajib mengunggah Laporan Pertanggungjawaban (LPJ)</strong> kegiatan tersebut agar gembok pengajuan proposal baru dapat dibuka kembali.
+                                @elseif($isLpjReview)
+                                    Dokumen LPJ telah diunggah (status: <strong>{{ $blocking->state->label }}</strong>) dan saat ini sedang dalam proses evaluasi oleh tim verifikator (BKHM / WR3). Gembok pengajuan proposal baru akan otomatis terbuka setelah evaluasi LPJ disetujui penuh (Selesai/Completed).
+                                @else
+                                    Anda belum bisa mengajukan proposal baru karena masih ada proposal kegiatan yang sedang berjalan dalam tahapan verifikasi atau ditolak.
+                                @endif
+                            </p>
+
+                            <div class="mt-3.5 text-sm bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <div>
+                                    <div class="text-gray-500 text-xs uppercase font-semibold">Kegiatan yang Sedang Berjalan:</div>
+                                    <div class="font-bold text-gray-900 text-sm mt-0.5">{{ $blocking->nama_kegiatan }}</div>
+                                    <div class="text-xs text-gray-600 mt-0.5">Status Saat Ini: <span class="font-bold {{ $isDanaCair ? 'text-amber-700' : 'text-indigo-700' }}">{{ $blocking->state->label ?? $blocking->state->name }}</span></div>
+                                </div>
+                                @if($isDanaCair)
+                                    <a href="{{ route('lpj.create', $blocking) }}" class="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs shadow transition shrink-0">
+                                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                        Unggah LPJ Sekarang
+                                    </a>
+                                @endif
                             </div>
-                            <div class="mt-4"><a href="{{ route('pengajuan.show', $blocking) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded text-sm">Lihat Pengajuan</a> <a href="{{ route('pengajuan.index') }}" class="ml-2 text-sm text-yellow-800 underline">Ke Riwayat</a></div>
+
+                            <div class="mt-4 flex items-center gap-3">
+                                <a href="{{ route('pengajuan.show', $blocking) }}" class="text-xs font-semibold {{ $isDanaCair ? 'text-amber-900 underline' : 'text-indigo-700 underline' }}">
+                                    Lihat Detail & Riwayat Pengajuan
+                                </a>
+                                <span class="text-gray-300">•</span>
+                                <a href="{{ route('pengajuan.index') }}" class="text-xs text-gray-600 hover:underline">
+                                    Ke Riwayat Proposal
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -75,7 +123,10 @@
 
                                 <div class="mb-4">
                                     <x-input-label for="dana_diajukan" :value="__('Dana Diajukan (Rp)')" />
-                                    <x-text-input id="dana_diajukan" class="block mt-1 w-full" type="number" name="dana_diajukan" :value="old('dana_diajukan')" required min="0" :disabled="isset($blocking) && $blocking" />
+                                    <x-text-input id="dana_diajukan" class="block mt-1 w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" type="number" name="dana_diajukan" :value="old('dana_diajukan')" required min="0" :disabled="isset($blocking) && $blocking" onwheel="this.blur()" oninput="document.getElementById('dana_diajukan_preview').innerText = this.value ? 'Terbilang: Rp ' + new Intl.NumberFormat('id-ID').format(this.value) : ''" />
+                                    <p id="dana_diajukan_preview" class="text-xs text-indigo-600 mt-1 font-semibold">
+                                        {{ old('dana_diajukan') ? 'Terbilang: Rp ' . number_format(old('dana_diajukan'), 0, ',', '.') : '' }}
+                                    </p>
                                     <x-input-error :messages="$errors->get('dana_diajukan')" class="mt-2" />
                                 </div>
 

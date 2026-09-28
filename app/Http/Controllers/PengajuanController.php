@@ -105,11 +105,12 @@ class PengajuanController extends Controller
 
     public function show(Pengajuan $pengajuan)
     {
-        if ($pengajuan->user_id !== Auth::id() && ! Auth::user()->hasRole('admin')) {
+        $user = Auth::user();
+        if ($pengajuan->user_id !== $user->id && ! $user->hasAnyRole(['admin', 'bkhm', 'wr3', 'bem', 'bpm'])) {
             abort(403);
         }
 
-        $pengajuan->load(['state', 'histori.user', 'histori.state', 'programKerja']);
+        $pengajuan->load(['state', 'histori.user', 'histori.state', 'programKerja', 'tandaTanganDigitals']);
         return view('pengajuan.show', compact('pengajuan'));
     }
 

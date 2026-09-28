@@ -1,6 +1,5 @@
 @php
     $c = is_string($lpj->content) ? (json_decode($lpj->content, true) ?: []) : (array) $lpj->content;
-    $owner = $lpj->user ?? Auth::user();
     $realisasi = $lpj->metadata['realisasi_dana'] ?? 0;
     $danaProposal = $proposal ? $proposal->rab->sum('total_harga') : 0;
 @endphp
@@ -72,21 +71,9 @@
     </div>
 
     <div style="margin-top: 40px; text-align: right;">Garut, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</div>
-    <div style="margin-top: 20px;">
-        <table style="border: none;">
-            <tr>
-                <td style="border: none; text-align: center; width: 50%;">
-                    <div>Ketua Pelaksana,</div>
-                    <div style="height: 70px;"></div>
-                    <div style="font-weight: bold; text-decoration: underline;">{{ $owner->nama_ketua ?? $owner->name ?? '..........................' }}</div>
-                </td>
-                <td style="border: none; text-align: center; width: 50%;">
-                    <div>Sekretaris,</div>
-                    <div style="height: 70px;"></div>
-                    <div style="font-weight: bold; text-decoration: underline;">{{ $owner->nama_sekretaris ?? '..........................' }}</div>
-                </td>
-            </tr>
-        </table>
-    </div>
+    @include('generator.partials.penandatangan', [
+        'penandatanganList' => $lpj->penandatangan_list,
+        'signatures' => $lpj->signatures_by_index,
+    ])
 </body>
 </html>

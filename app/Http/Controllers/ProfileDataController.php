@@ -16,8 +16,11 @@ class ProfileDataController extends Controller
             'alamat' => 'nullable|string|max:255',
             'telepon' => 'nullable|string|max:20',
             'nama_ketua' => 'nullable|string|max:255',
+            'nim_ketua' => 'nullable|string|max:50',
             'nama_sekretaris' => 'nullable|string|max:255',
+            'nim_sekretaris' => 'nullable|string|max:50',
             'nama_bendahara' => 'nullable|string|max:255',
+            'nim_bendahara' => 'nullable|string|max:50',
             'foto_profil' => 'nullable|image|max:2048',
             'logo_ormawa' => 'nullable|image|max:2048',
             'ttd_ketua' => 'nullable|image|mimes:png|max:1024',
@@ -29,7 +32,12 @@ class ProfileDataController extends Controller
             'ttd_bendahara.mimes' => 'Tanda tangan harus berupa file PNG (disarankan transparan).',
         ]);
 
-        $data = $request->only(['alamat', 'telepon', 'nama_ketua', 'nama_sekretaris', 'nama_bendahara']);
+        $data = $request->only([
+            'alamat', 'telepon',
+            'nama_ketua', 'nim_ketua',
+            'nama_sekretaris', 'nim_sekretaris',
+            'nama_bendahara', 'nim_bendahara',
+        ]);
 
         // Handle file uploads
         $files = ['foto_profil', 'logo_ormawa', 'ttd_ketua', 'ttd_sekretaris', 'ttd_bendahara'];

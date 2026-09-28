@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProposalOtomatis;
 use App\Models\ProposalPanitia;
 use App\Models\ProposalRab;
+use App\Services\DigitalSignatureService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +40,21 @@ class ProposalGeneratorController extends Controller
 
         $isDraft = $request->action === 'draft';
 
-        $proposal = ProposalOtomatis::create([
+        $penandatanganList = $this->buildPenandatanganList($request);
+
+        // Petakan ke kolom lama ttd_1..ttd_3 demi kompatibilitas data.
+        $legacyTtd = [];
+        for ($n = 1; $n <= 3; $n++) {
+            $p = $penandatanganList[$n - 1] ?? null;
+            $internal = $p && ($p['jenis'] ?? 'internal') === 'internal';
+            $legacyTtd["ttd_{$n}_role"] = ($internal && ! empty($p['role'])) ? $p['role'] : 'none';
+            $legacyTtd["ttd_{$n}_nama"] = $internal ? ($p['nama'] ?? null) : null;
+            $legacyTtd["ttd_{$n}_jabatan"] = $internal ? ($p['jabatan'] ?? null) : null;
+            $legacyTtd["ttd_{$n}_nim"] = $internal ? ($p['nim'] ?? null) : null;
+            $legacyTtd["ttd_{$n}_file"] = ($internal && ! empty($p['role'])) ? (Auth::user()->{'ttd_' . $p['role']} ?? null) : null;
+        }
+
+        $proposal = ProposalOtomatis::create(array_merge([
             'user_id' => Auth::id(),
             'nama_kegiatan' => $request->nama_kegiatan,
             'latar_belakang' => $request->latar_belakang,
@@ -50,20 +65,13 @@ class ProposalGeneratorController extends Controller
             'dampak' => $request->dampak,
             'penutup' => $request->penutup,
             'status' => $isDraft ? 'draft' : 'siap_cetak',
-            
-            // Setting TTD dari profil user sesuai pilihan role
-            'ttd_1_role' => $request->ttd_1_role ?? 'ketua',
-            'ttd_1_nama' => Auth::user()->nama_ketua,
-            'ttd_1_file' => Auth::user()->ttd_ketua,
-            
-            'ttd_2_role' => $request->ttd_2_role ?? 'sekretaris',
-            'ttd_2_nama' => Auth::user()->nama_sekretaris,
-            'ttd_2_file' => Auth::user()->ttd_sekretaris,
+            'penandatangan' => $penandatanganList,
+        ], $legacyTtd));
 
-            'ttd_3_role' => $request->ttd_3_role ?? 'ketua',
-            'ttd_3_nama' => Auth::user()->nama_ketua,
-            'ttd_3_file' => Auth::user()->ttd_ketua,
-        ]);
+        // Draft belum final, jadi tanda tangan kripto dibubuhkan saat difinalisasi.
+        if (! $isDraft) {
+            DigitalSignatureService::signMany($proposal, $penandatanganList, Auth::user());
+        }
 
         // Save RAB
         if ($request->has('rab_rincian')) {
@@ -120,67 +128,142 @@ class ProposalGeneratorController extends Controller
         return view('generator.letters.create');
     }
 
+    /**
+     * Susun daftar penandatangan dari input dinamis.
+     * Entri internal memakai nama profil, entri eksternal memakai nama bebas.
+     */
+    private function buildPenandatanganList(Request $request): array
+    {
+        $roles    = $request->input('penandatangan_role', ['ketua']);
+        $jenis    = $request->input('penandatangan_jenis', []);
+        $names    = $request->input('penandatangan_nama', []);
+        $jabatans = $request->input('penandatangan_jabatan', []);
+        $user     = Auth::user();
+
+        $namaMap = [
+            'ketua'      => $user->nama_ketua      ?? $user->name,
+            'sekretaris' => $user->nama_sekretaris  ?? $user->name,
+            'bendahara'  => $user->nama_bendahara   ?? $user->name,
+        ];
+
+        $nimMap = [
+            'ketua'      => $user->nim_ketua      ?? null,
+            'sekretaris' => $user->nim_sekretaris  ?? null,
+            'bendahara'  => $user->nim_bendahara   ?? null,
+        ];
+
+        $list = [];
+        $count = max(count($roles), count($jenis), count($names), count($jabatans));
+        for ($idx = 0; $idx < $count; $idx++) {
+            $role = $roles[$idx] ?? 'ketua';
+            $tipe = ($jenis[$idx] ?? 'internal') === 'eksternal' ? 'eksternal' : 'internal';
+            $nama = trim($names[$idx] ?? '');
+
+            if ($tipe === 'internal') {
+                if ($nama === '') {
+                    $nama = $namaMap[$role] ?? $user->name;
+                }
+                $jabatan = trim($jabatans[$idx] ?? '') ?: ucfirst($role);
+                $nim = $nimMap[$role] ?? null;
+            } else {
+                $nama = $nama !== '' ? $nama : 'Pihak Luar';
+                $jabatan = trim($jabatans[$idx] ?? '') ?: 'Pihak Luar';
+                $nim = null;
+            }
+
+            $list[] = [
+                'jenis'   => $tipe,
+                'role'    => $tipe === 'internal' ? $role : null,
+                'nama'    => $nama,
+                'jabatan' => $jabatan,
+                'nim'     => $nim,
+            ];
+        }
+
+        if (empty($list)) {
+            $list = [[
+                'jenis'   => 'internal',
+                'role'    => 'ketua',
+                'nama'    => $namaMap['ketua'],
+                'jabatan' => 'Ketua',
+                'nim'     => $nimMap['ketua'],
+            ]];
+        }
+
+        return $list;
+    }
+
     public function storeLetter(Request $request)
     {
         $request->validate([
-            'type' => 'required|in:undangan,tugas,permohonan,keterangan_aktif',
-            'nomor_surat' => 'nullable|string|max:255',
-            'perihal' => 'required|string|max:255',
-            'tujuan' => 'required|string|max:255',
-            'penandatangan' => 'nullable|in:ketua,sekretaris,bendahara',
+            'type'       => 'required|in:undangan,tugas,permohonan,keterangan_aktif',
+            'nomor_surat'=> 'nullable|string|max:255',
+            'perihal'    => 'required|string|max:255',
+            'tujuan'     => 'required|string|max:255',
         ]);
 
-        $meta = ['tujuan'=>$request->tujuan, 'penandatangan'=>$request->penandatangan ?? 'ketua'];
+        // Susun daftar penandatangan dari input dinamis (internal atau pihak luar)
+        $penandatanganList = $this->buildPenandatanganList($request);
+
+        $meta = [
+            'tujuan'             => $request->tujuan,
+            'penandatangan'      => $penandatanganList[0]['role'] ?? 'internal',
+            'penandatangan_list' => $penandatanganList,
+        ];
         $content = '';
 
         if ($request->type === 'undangan') {
             $request->validate([
-                'kalimat_pembuka'=>'required|string',
-                'nama_acara'=>'required|string|max:255',
-                'hari_tanggal'=>'required|string|max:255',
-                'waktu'=>'required|string|max:255',
-                'tempat'=>'required|string|max:255',
+                'kalimat_pembuka'=> 'required|string',
+                'nama_acara'     => 'required|string|max:255',
+                'hari_tanggal'   => 'required|string|max:255',
+                'waktu'          => 'required|string|max:255',
+                'tempat'         => 'required|string|max:255',
             ]);
-            $meta = array_merge($meta, $request->only(['kalimat_pembuka','nama_acara','hari_tanggal','waktu','tempat']));
-            $content = trim($request->kalimat_pembuka."\n\nNama Acara: ".$request->nama_acara."\nHari/Tanggal: ".$request->hari_tanggal."\nWaktu: ".$request->waktu."\nTempat: ".$request->tempat);
+            $meta    = array_merge($meta, $request->only(['kalimat_pembuka', 'nama_acara', 'hari_tanggal', 'waktu', 'tempat']));
+            $content = trim($request->kalimat_pembuka . "\n\nNama Acara: " . $request->nama_acara . "\nHari/Tanggal: " . $request->hari_tanggal . "\nWaktu: " . $request->waktu . "\nTempat: " . $request->tempat);
         } elseif ($request->type === 'tugas') {
             $request->validate([
-                'nama_petugas'=>'required|string|max:255',
-                'nim'=>'required|string|max:100',
-                'uraian_tugas'=>'required|string',
-                'tanggal_pelaksanaan'=>'required|string|max:255',
+                'nama_petugas'        => 'required|string|max:255',
+                'nim'                 => 'required|string|max:100',
+                'uraian_tugas'        => 'required|string',
+                'tanggal_pelaksanaan' => 'required|string|max:255',
             ]);
-            $meta = array_merge($meta, $request->only(['nama_petugas','nim','uraian_tugas','tanggal_pelaksanaan']));
-            $content = "Menugaskan: ".$request->nama_petugas." (NIM ".$request->nim.")\nUraian: ".$request->uraian_tugas."\nTanggal: ".$request->tanggal_pelaksanaan;
+            $meta    = array_merge($meta, $request->only(['nama_petugas', 'nim', 'uraian_tugas', 'tanggal_pelaksanaan']));
+            $content = "Menugaskan: " . $request->nama_petugas . " (NIM " . $request->nim . ")\nUraian: " . $request->uraian_tugas . "\nTanggal: " . $request->tanggal_pelaksanaan;
         } elseif ($request->type === 'permohonan') {
             $request->validate([
-                'nama_alat_tempat'=>'required|string|max:255',
-                'waktu_penggunaan'=>'required|string|max:255',
-                'alasan_tujuan'=>'required|string',
+                'nama_alat_tempat'  => 'required|string|max:255',
+                'waktu_penggunaan'  => 'required|string|max:255',
+                'alasan_tujuan'     => 'required|string',
             ]);
-            $meta = array_merge($meta, $request->only(['nama_alat_tempat','waktu_penggunaan','alasan_tujuan']));
-            $content = "Memohon peminjaman ".$request->nama_alat_tempat." pada ".$request->waktu_penggunaan."\nAlasan: ".$request->alasan_tujuan;
+            $meta    = array_merge($meta, $request->only(['nama_alat_tempat', 'waktu_penggunaan', 'alasan_tujuan']));
+            $content = "Memohon peminjaman " . $request->nama_alat_tempat . " pada " . $request->waktu_penggunaan . "\nAlasan: " . $request->alasan_tujuan;
         } elseif ($request->type === 'keterangan_aktif') {
             $request->validate([
-                'nama_mahasiswa'=>'required|string|max:255',
-                'nim'=>'required|string|max:100',
-                'jabatan'=>'required|string|max:255',
-                'keperluan'=>'required|string',
+                'nama_mahasiswa' => 'required|string|max:255',
+                'nim'            => 'required|string|max:100',
+                'jabatan'        => 'required|string|max:255',
+                'keperluan'      => 'required|string',
             ]);
-            $meta = array_merge($meta, $request->only(['nama_mahasiswa','nim','jabatan','keperluan']));
-            $content = "Menerangkan bahwa ".$request->nama_mahasiswa." (NIM ".$request->nim.") jabatan ".$request->jabatan." keperluan: ".$request->keperluan;
+            $meta    = array_merge($meta, $request->only(['nama_mahasiswa', 'nim', 'jabatan', 'keperluan']));
+            $content = "Menerangkan bahwa " . $request->nama_mahasiswa . " (NIM " . $request->nim . ") jabatan " . $request->jabatan . " keperluan: " . $request->keperluan;
         }
 
         $letter = \App\Models\Letter::create([
-            'user_id' => Auth::id(),
-            'type' => $request->type,
+            'user_id'     => Auth::id(),
+            'type'        => $request->type,
             'nomor_surat' => $request->nomor_surat,
-            'perihal' => $request->perihal,
-            'content' => $content ?: ($request->content ?? '-'),
-            'metadata' => $meta,
+            'perihal'     => $request->perihal,
+            'content'     => $content ?: ($request->content ?? '-'),
+            'metadata'    => $meta,
         ]);
 
-        return redirect()->route('generator.letters.show', $letter)->with('success', 'Surat berhasil dibuat.');
+        // Bubuhkan tanda tangan digital untuk setiap penandatangan internal
+        // (penandatangan pihak luar ditandatangani manual di luar sistem)
+        DigitalSignatureService::signMany($letter, $penandatanganList, Auth::user());
+
+        return redirect()->route('generator.letters.show', $letter)->with('success', 'Surat berhasil dibuat dan ditandatangani secara digital.');
     }
 
     public function showLetter(\App\Models\Letter $letter)
@@ -192,10 +275,11 @@ class ProposalGeneratorController extends Controller
 
     public function archive()
     {
-        $proposals = Auth::user()->hasRole('admin')
+        $isGlobalViewer = Auth::user()->hasAnyRole(['admin', 'bkhm', 'wr3', 'bem', 'bpm']);
+        $proposals = $isGlobalViewer
             ? ProposalOtomatis::with('user')->latest()->get()
             : ProposalOtomatis::where('user_id', Auth::id())->latest()->get();
-        $letters = Auth::user()->hasRole('admin')
+        $letters = $isGlobalViewer
             ? \App\Models\Letter::with('user')->latest()->get()
             : \App\Models\Letter::where('user_id', Auth::id())->latest()->get();
         
@@ -228,6 +312,9 @@ class ProposalGeneratorController extends Controller
             'penutup' => 'required|string',
         ]);
 
+        $penandatanganList = $this->buildPenandatanganList($request);
+        $isPrint = $request->action === 'print';
+
         $lpj = \App\Models\Letter::create([
             'user_id' => Auth::id(),
             'proposal_otomatis_id' => $request->proposal_id,
@@ -240,11 +327,13 @@ class ProposalGeneratorController extends Controller
                 'hambatan' => $request->hambatan,
                 'saran' => $request->saran,
                 'penutup' => $request->penutup,
-                'is_draft' => $request->action === 'draft',
+                'is_draft' => ! $isPrint,
             ]),
             'metadata' => [
                 'proposal_id' => $request->proposal_id,
                 'realisasi_dana' => $request->total_realisasi ?? 0,
+                'penandatangan' => $penandatanganList[0]['role'] ?? 'internal',
+                'penandatangan_list' => $penandatanganList,
                 'ttd_1' => $request->ttd_1,
                 'ttd_2' => $request->ttd_2,
                 'ttd_3' => $request->ttd_3,
@@ -252,7 +341,8 @@ class ProposalGeneratorController extends Controller
             ],
         ]);
 
-        if ($request->action === 'print') {
+        if ($isPrint) {
+            DigitalSignatureService::signMany($lpj, $penandatanganList, Auth::user());
             return redirect()->route('generator.lpj.show', $lpj)->with('success', 'LPJ berhasil disimpan dan siap dicetak.');
         }
 

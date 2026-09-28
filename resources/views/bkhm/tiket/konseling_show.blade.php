@@ -60,7 +60,7 @@
                             </div>
                             <div>
                                 <span class="text-slate-400 block mb-1">Email Mahasiswa</span>
-                                <a href="mailto:{{ $tiket->email }}" class="font-semibold text-blue-600 hover:underline">{{ $tiket->email }}</a>
+                                <a href="mailto:{{ $tiket->email }}" class="font-semibold text-indigo-600 hover:underline">{{ $tiket->email }}</a>
                             </div>
                             <div>
                                 <span class="text-slate-400 block mb-1">No. WhatsApp / HP</span>
