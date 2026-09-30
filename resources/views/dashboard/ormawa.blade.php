@@ -140,7 +140,10 @@
                 <!-- Calendar / Facility Usage -->
                 <div class="lg:col-span-3 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-lg font-bold mb-4">Kalender Pemakaian Fasilitas</h3>
-                    <div id="calendar" class="bg-white p-4 border rounded shadow-sm"></div>
+                    <x-calendar-style />
+                    <div class="skin-calendar-wrapper">
+                        <div id="calendar"></div>
+                    </div>
                 </div>
 
                 <!-- Agenda & Facilities List (Simplified) -->

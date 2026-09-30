@@ -217,11 +217,14 @@
 
             <!-- Kalender Terpadu Peminjaman Tempat & Fasilitas -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-3">
-                <div class="border-b border-slate-100 pb-3">
+                <div class="border-b border-slate-100 pb-3 mb-4">
                     <h3 class="font-bold text-slate-900 text-base">Jadwal Terpadu Fasilitas &amp; Barang Kampus</h3>
                     <p class="text-xs text-slate-500 mt-0.5">Pemantauan okupansi ruangan dan sarana inventaris kampus untuk kelancaran kegiatan ormawa.</p>
                 </div>
-                <div id="calendar" class="border border-slate-200 p-3 rounded-xl bg-slate-50/50"></div>
+                <x-calendar-style />
+                <div class="skin-calendar-wrapper">
+                    <div id="calendar"></div>
+                </div>
             </div>
 
         </div>

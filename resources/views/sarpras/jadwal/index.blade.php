@@ -95,8 +95,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-lg font-bold mb-4 border-b pb-2">Kalender Ketersediaan Ruangan</h3>
-                    <p class="text-xs text-gray-500 mb-3">Biru = jadwal kuliah (pola mingguan). Oranye = peminjaman ruangan disetujui/proses.</p>
-                    <div id="calendar" class="p-2 border rounded shadow-sm"></div>
+                    <p class="text-xs text-gray-500 mb-4">Biru = jadwal kuliah (pola mingguan). Oranye = peminjaman ruangan disetujui/proses.</p>
+                    <x-calendar-style />
+                    <div class="skin-calendar-wrapper">
+                        <div id="calendar"></div>
+                    </div>
                 </div>
             </div>
         </div>

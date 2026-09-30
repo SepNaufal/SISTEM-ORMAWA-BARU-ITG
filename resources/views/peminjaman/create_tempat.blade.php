@@ -124,7 +124,10 @@
                                 <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-500 inline-block"></span> Peminjaman Ormawa</span>
                             </div>
                         </div>
-                        <div id="calendar" class="p-3 bg-white border border-slate-200 rounded-xl shadow-xs"></div>
+                        <x-calendar-style />
+                        <div class="skin-calendar-wrapper mt-4">
+                            <div id="calendar"></div>
+                        </div>
                     </div>
 
                 </div>

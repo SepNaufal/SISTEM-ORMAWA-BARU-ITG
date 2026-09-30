@@ -131,9 +131,12 @@
             </div>
 
             <div class="bg-white p-4 rounded shadow">
-                <h3 class="font-bold mb-3">Jadwal Terpadu Fasilitas & Barang</h3>
-                <p class="text-xs text-gray-500 mb-2">Klik pada agenda untuk melihat detail kegiatan</p>
-                <div id="calendar" class="border p-2 rounded"></div>
+                <h3 class="font-bold mb-2">Jadwal Terpadu Fasilitas & Barang</h3>
+                <p class="text-xs text-gray-500 mb-4">Klik pada agenda untuk melihat detail kegiatan</p>
+                <x-calendar-style />
+                <div class="skin-calendar-wrapper">
+                    <div id="calendar"></div>
+                </div>
             </div>
         </div>
     </div>
