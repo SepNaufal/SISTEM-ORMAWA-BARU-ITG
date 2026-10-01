@@ -114,5 +114,15 @@ Pada dashboard pengurus ormawa (`resources/views/dashboard/ormawa.blade.php`), 3
   - **Metadata Struktural:** Kotak informasi pembina (`BKHM ITG`), pengawas (`BPM ITG`), dan status legalitas SK Rektor.
   - **Tautan Kaki:** Akses langsung ke `Pengaturan Profil & SK Organisasi →`.
 
+## 7. Pembersihan Tombol Ganda Dashboard (UI-021)
+Pada halaman publik Pusat Informasi & Regulasi (`resources/views/informasi/index.blade.php`), dilakukan perbaikan redundansi navigasi:
+- **Latar Belakang:** Ketika pengguna dalam keadaan terautentikasi (*logged in*), navbar menampilkan dua tombol "Dashboard" sekaligus (satu tombol putih bergaris dari slot `nav` lokal dan satu tombol biru berikon dari layout dasar `public-layout`).
+- **Tindakan:** Menghapus blok `@auth ... @endauth` pada slot `nav` lokal file `informasi/index.blade.php`.
+- **Hasil:** Navbar kini bersih, hanya menampilkan tombol "Portal Layanan" di tengah dan tombol utama "Dashboard" di sisi kanan.
+
+## 8. Optimasi Antarmuka Mobile & Sidebar Drawer (UI-022)
+Dokumentasi lengkap mengenai optimasi antarmuka layar ponsel (*smartphone*), penghapusan tumpukan header (*anti-collision*), dan transformasi sidebar menjadi *mobile slide-over drawer* telah dipisahkan ke dalam dokumen tersendiri:
+👉 **[Lihat Dokumentasi Lengkap Optimasi Mobile & Sidebar Drawer (docs/OPTIMASI_MOBILE_RESPONSIVE.md)](OPTIMASI_MOBILE_RESPONSIVE.md)**
+
 ---
-*Catatan: Seluruh perubahan saat ini siap diuji coba secara lokal dan siap di-push ke git setelah ada instruksi dari pengguna.*
+*Dokumen ini diperbarui secara berkala sesuai perkembangan implementasi.*
