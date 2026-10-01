@@ -94,5 +94,25 @@ Pada dashboard BKHM (`resources/views/dashboard/bkhm.blade.php`), 6 kartu metrik
   5. 🏢 **Verifikasi Tempat:** Icon badge emerald/sky (`bg-emerald-50`), tag `Sarpras`, angka `#15803D`, link `Kelola Slot →`.
   6. 📦 **Verifikasi Barang:** Icon badge slate (`bg-slate-50`), tag `Inventaris`, angka `#334155`, link `Kelola Alat →`.
 
+## 6. Redesign Dashboard Utama Ormawa (UI-020: Opsi A - Modern Academic Executive)
+Pada dashboard pengurus ormawa (`resources/views/dashboard/ormawa.blade.php`), 3 elemen utama telah dimodernisasi menggunakan **Opsi A (Modern Academic Executive)**:
+- **5 Kartu Counter Data (Top Stats):**
+  1. 💰 **Sisa Saldo Tersedia:** Icon box emerald pastel (`bg-emerald-50 text-emerald-600`), tag `Kas Ormawa`, angka monospaced tebal, tautan `Cek Mutasi →`.
+  2. 🏛️ **Total Dana Diberikan:** Icon box blue pastel (`bg-blue-50 text-[#1E40AF]`), tag `Pagu Anggaran`, angka monospaced, tautan `Rincian Pagu →`.
+  3. ⏳ **Dana Terpakai & Diproses:** Icon box amber pastel (`bg-amber-50 text-amber-600`), tag `Realisasi`, angka monospaced, tautan `Tracking Dana →`.
+  4. 📑 **Total Proposal Diajukan:** Icon box indigo pastel (`bg-indigo-50 text-indigo-600`), tag `Total Usulan`, counter angka, tautan `Lihat Semua →`.
+  5. ⚡ **Proposal Dalam Proses:** Icon box purple pastel (`bg-purple-50 text-purple-600`), tag `Review Aktif`, counter angka, tautan `Pantau Progres →`.
+- **Visualisasi Alokasi & Serapan Anggaran (Split Layout):**
+  - **Sisi Kiri:** Bagan donat Chart.js modern (`cutout: '72%'`) dengan persentase di tengah lingkaran (`100% Saldo Utuh`) dan legenda status interaktif.
+  - **Sisi Kanan:** 3 Bilah progres horizontal (*Progress Bars*) dengan persentase dan nominal riil (*Sisa Saldo Tersedia*, *Dana Sedang Diproses*, *Dana Terealisasi & Selesai*).
+  - **Indikator Kesehatan Kas:** Badge dinamis `✓ Anggaran Sehat 100%` beranimasi pulse.
+  - **Kaki Widget:** Tips pengajuan H-14 dan tombol call-to-action `+ Buat Pengajuan Baru` berwarna Solid Royal Navy (`#0B1528`).
+- **Kartu Identitas Resmi Ormawa (Executive Identity):**
+  - **Header Banner Resmi:** Banner navy gelap bertuliskan `PORTAL RESMI ORMAWA | T.A. 2026/2027`.
+  - **Avatar & Verified Badge:** Avatar profil ormawa berbingkai ganda dengan titik indikator verifikasi hijau.
+  - **Tag Peran Ganda:** Chip status `● Aktif` & `🏛️ Ormawa Kampus`.
+  - **Metadata Struktural:** Kotak informasi pembina (`BKHM ITG`), pengawas (`BPM ITG`), dan status legalitas SK Rektor.
+  - **Tautan Kaki:** Akses langsung ke `Pengaturan Profil & SK Organisasi →`.
+
 ---
 *Catatan: Seluruh perubahan saat ini siap diuji coba secara lokal dan siap di-push ke git setelah ada instruksi dari pengguna.*
