@@ -32,30 +32,30 @@ Berdasarkan masukan klien dan hasil evaluasi:
 ### 3.1 Tampilan Halaman Penuh dengan Background Logo Obor Berwarna & Section SKIN ITG (Final & Live)
 > Desain utuh Portal Layanan Mahasiswa dengan integrasi Logo Obor pada navbar, ornamen background warna asli pada Hero Banner, Maskot Si Ujang, formulir lacak tiket melayang, section pengenalan *"Apa Itu SKIN ITG?"* dengan Showcase Card Logo Resmi alur SKIN ala AISnet, 3 kategori layanan terstruktur, dan footer institusi.
 
-![Portal Layanan Mahasiswa Redesign](portal-layanan-redesign-maskot.png)
+![Portal Layanan Mahasiswa Redesign](images/portal-layanan-redesign-maskot.png)
 
 ### 3.2 Detail Hero Banner dengan Ornamen Logo Obor Berwarna (Warna Asli)
 > Tampilan close-up resolusi tinggi dari Hero Banner dengan ornamen logo obor warna asli (kujang biru dan kobaran api emas).
 
-![Hero Versi A - Warna Asli](hero-versi-a-warna-asli.png)
+![Hero Versi A - Warna Asli](images/hero-versi-a-warna-asli.png)
 
 ### 3.4 Eksplorasi Hero Versi A: Card Showcase Logo SKIN ala AISnet (Mandiri)
 > Meniru 100% pola kartu identitas aplikasi AISnet ITG (gambar referensi klien), di mana panggung kanan fokus menampilkan kartu rounded putih berkontras tinggi dengan logo alur SKIN berukuran besar (120×120px), teks sistem, dan nama institusi.
 
-![Hero Versi A - Card Logo SKIN Mandiri ala AISnet](hero-versi-a-ref-aisnet-card.png)
+![Hero Versi A - Card Logo SKIN Mandiri ala AISnet](images/hero-versi-a-ref-aisnet-card.png)
 
 ### 3.5 Eksplorasi Hero Versi A: Kombo Card Logo SKIN + Maskot Si Ujang
 > Memadukan kartu identitas aplikasi ala AISnet ITG di sisi kiri panggung dengan kehadiran ramah Maskot Si Ujang di sisi kanan lengkap dengan balon sapaan lokal Sunda.
 
-![Hero Versi A - Kombo Card Logo SKIN + Si Ujang](hero-versi-a-ref-aisnet-combo.png)
+![Hero Versi A - Kombo Card Logo SKIN + Si Ujang](images/hero-versi-a-ref-aisnet-combo.png)
 
 ### 3.6 Solusi Penempatan Terbaik: Section "Apa Itu SKIN ITG?" (Di Antara Banner & Kategori Layanan) ⭐
 > Menempatkan kartu showcase logo resmi alur SKIN bersama narasi perkenalan platform tepat di antara Hero Banner dan Kategori Layanan Publik. Pendekatan ini mempertahankan keramahan maskot Si Ujang di hero atas, sekaligus memberikan panggung khusus yang megah dan edukatif bagi Logo Resmi SKIN ITG sesuai referensi AISnet.
 
-![Detail Section Apa Itu SKIN ITG](section-about-skin-aisnet.png)
+![Detail Section Apa Itu SKIN ITG](images/section-about-skin-aisnet.png)
 
 #### Tampilan Keseluruhan Halaman Portal dengan Section Tersebut:
-![Portal Layanan Redesign dengan Section SKIN ITG](portal-layanan-redesign-with-about-skin.png)
+![Portal Layanan Redesign dengan Section SKIN ITG](images/portal-layanan-redesign-with-about-skin.png)
 
 ---
 
@@ -91,7 +91,7 @@ Implementasi desain terpilih telah berhasil diaplikasikan secara langsung ke dal
 
 ### Tangkapan Layar Sistem Live (Setelah Implementasi)
 
-![Live Portal Hero](portal-layanan-live-hero.jpg)
-![Live Portal Footer](portal-layanan-live-footer.jpg)
+![Live Portal Hero](images/portal-layanan-live-hero.jpg)
+![Live Portal Footer](images/portal-layanan-live-footer.jpg)
 
 

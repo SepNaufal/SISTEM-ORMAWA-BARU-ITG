@@ -67,14 +67,14 @@ Desain baru mengadopsi pola **Split-Screen Layout (Layar Terbagi Dua)** yang mem
 ### 4.1 Tampilan Desain Redesign Split-Screen (Hasil Prototype)
 > Desain modern split-screen yang menyatukan unsur akademis, keamanan sistem, dan keramahan maskot Si Ujang.
 
-![Login Redesign Split Screen](login-redesign-split.png)
+![Login Redesign Split Screen](images/login-redesign-split.png)
 
 ---
 
 ### 4.2 Tampilan Baseline Eksisting (Sebelum Redesign)
 > Tampilan awal halaman login sistem sebelum dilakukan peremajaan antarmuka.
 
-![Login Baseline](login-baseline.jpg)
+![Login Baseline](images/login-baseline.jpg)
 
 ---
 
@@ -96,5 +96,5 @@ Implementasi desain split-screen modern telah berhasil diaplikasikan secara lang
 
 ### Tangkapan Layar Sistem Live (Setelah Implementasi)
 
-![Login Live Implemented](login-live-implemented.jpg)
+![Login Live Implemented](images/login-live-implemented.jpg)
 

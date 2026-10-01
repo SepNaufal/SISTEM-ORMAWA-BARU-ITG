@@ -39,28 +39,28 @@ Pada tampilan **Baseline (Eksisting)**, ditemukan beberapa batasan fungsionalita
 ### 3.1 Opsi 1: Clean Academic Light (Pusat Pencarian Global & Breadcrumb Dinamis)
 > Mengusung estetika cerah, bersih, dan rapi yang nyaman untuk penggunaan durasi lama. Dilengkapi *breadcrumb* navigasi berlapis, indikator semester aktif (*T.A. 2026/2027 Ganjil*), kotak pencarian terpadu dengan pintasan keyboard `Ctrl + K`, tombol portal publik, lonceng notifikasi, serta kartu profil berwibawa.
 
-![Top Bar Opsi 1 Clean Light](topbar-opsi-1-light.png)
+![Top Bar Opsi 1 Clean Light](images/topbar-opsi-1-light.png)
 
 ---
 
 ### 3.2 Opsi 2: Deep Academic Navy (High-Contrast, Prestisius & Selaras Sidebar Opsi 1/4)
 > Dirancang dengan latar *Deep Academic Navy* (`#0B1528`) yang sangat padu jika disandingkan dengan **Sidebar Opsi 1 atau Opsi 4**. Menonjolkan sentuhan api obor keemasan (`#F59E0B`), badge status sistem online warna zamrud, dan pencarian bertema gelap berfokus tinggi.
 
-![Top Bar Opsi 2 Deep Navy](topbar-opsi-2-navy.png)
+![Top Bar Opsi 2 Deep Navy](images/topbar-opsi-2-navy.png)
 
 ---
 
 ### 3.3 Opsi 3: Edisi Interaktif Maskot Si Ujang & Pengumuman Kalender Akademik
 > Mengintegrasikan keramahan maskot kampus melalui **Widget Interaktif "Tanya Si Ujang"** di sisi kanan untuk akses panduan cepat regulasi/SOP bagi ormawa. Di sisi kiri, terdapat *Announcement Pill* dinamis yang menampilkan tenggat waktu administrasi penting (misal: periode pengajuan LPJ).
 
-![Top Bar Opsi 3 Edisi Si Ujang](topbar-opsi-3-siujang.png)
+![Top Bar Opsi 3 Edisi Si Ujang](images/topbar-opsi-3-siujang.png)
 
 ---
 
 ### 3.4 Baseline Eksisting (Tampilan Saat Ini)
 > Tampilan awal sistem sebelum perombakan antarmuka untuk tolok ukur evaluasi.
 
-![Top Bar Baseline](topbar-baseline.png)
+![Top Bar Baseline](images/topbar-baseline.png)
 
 ---
 

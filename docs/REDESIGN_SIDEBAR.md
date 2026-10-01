@@ -34,35 +34,35 @@ Desain sidebar mengadopsi 3 aset resmi institusi:
 ### 3.1 Opsi 4: Deep Academic Navy dengan Watermark Monokrom & Kartu "Baca Panduan" Si Ujang *(Pilihan Terlengkap)*
 > Mengadopsi struktur Opsi 1 (Deep Navy), diperkaya dengan **tekstur ornamen siluet Logo Obor Monokrom putih transparan (*opacity 0.06 – 0.08*)** pada latar belakangnya, serta dilengkapi **Kartu Pendamping Si Ujang (*Companion Card*)** dengan tombol aksi khusus **"Baca Panduan →"** sebagai akses instan panduan regulasi, SOP proposal, dan LPJ bagi ormawa.
 
-![Sidebar Opsi 4 - Watermark Monokrom & Panduan Si Ujang](sidebar-opsi-4-watermark-mono.png)
+![Sidebar Opsi 4 - Watermark Monokrom & Panduan Si Ujang](images/sidebar-opsi-4-watermark-mono.png)
 
 ---
 
 ### 3.2 Opsi 3: Edisi Khusus Maskot Si Ujang & Logo Obor Kemahasiswaan
 > Mengintegrasikan Logo Obor Kemahasiswaan asli pada header brand, serta menghadirkan **Kartu Pendamping Si Ujang (*Companion Card*)** sebelum footer sebagai akses cepat panduan alur proposal/LPJ bagi ormawa.
 
-![Sidebar Opsi 3 - Edisi Maskot Si Ujang & Logo Obor](sidebar-opsi-3-maskot-obor.png)
+![Sidebar Opsi 3 - Edisi Maskot Si Ujang & Logo Obor](images/sidebar-opsi-3-maskot-obor.png)
 
 ---
 
 ### 3.3 Opsi 1: Deep Academic Navy & Flame Gold Accent (Polos)
 > Biru navy tua institusi dengan aksen lidah api emas menyala pada menu aktif. Berkesan megah, berwibawa, dan resmi dengan latar bersih tanpa watermark.
 
-![Sidebar Opsi 1 - Deep Academic Navy](sidebar-opsi-1-navy.png)
+![Sidebar Opsi 1 - Deep Academic Navy](images/sidebar-opsi-1-navy.png)
 
 ---
 
 ### 3.4 Opsi 2: Modern Campus Clean Light
 > Mengadopsi dominasi putih bersih dengan aksen Royal Blue ITG. Sangat direkomendasikan untuk staf yang bekerja lama menatap layar di ruangan terang (*low eye fatigue*).
 
-![Sidebar Opsi 2 - Clean Campus Light](sidebar-opsi-2-light.png)
+![Sidebar Opsi 2 - Clean Campus Light](images/sidebar-opsi-2-light.png)
 
 ---
 
 ### 3.5 Baseline: Tampilan Sidebar Saat Ini (Pembanding Histori)
 > Tampilan awal sistem sebelum proses perancangan ulang.
 
-![Sidebar Baseline](sidebar-baseline.png)
+![Sidebar Baseline](images/sidebar-baseline.png)
 
 ---
 
@@ -111,7 +111,7 @@ Implementasi watermark monokrom pada sidebar Blade [`resources/views/layouts/sid
 
 Sidebar Opsi 4 telah berhasil diintegrasikan ke dalam layout utama dashboard dan dikompilasi menggunakan Vite (`resources/views/layouts/sidebar.blade.php`).
 
-![Hasil Implementasi Live Sidebar Opsi 4](sidebar-live-implemented.jpg)
+![Hasil Implementasi Live Sidebar Opsi 4](images/sidebar-live-implemented.jpg)
 
 ### Ringkasan Fitur yang Berjalan:
 1. **Logo Resmi SKIN ITG:** Menampilkan lambang alur trinitas kemahasiswaan SKIN (BKKH – ORMAWA – WR3) dengan wadah rounded putih berkontras tinggi di header sidebar.
@@ -126,8 +126,8 @@ Sidebar Opsi 4 telah berhasil diintegrasikan ke dalam layout utama dashboard dan
 
 Pada saat sidebar dalam kondisi tertutup / menciut (`!sidebarOpen`, lebar `w-20` / 80px), diterapkan **Variasi B (Docked Bottom)**:
 
-![Variasi B Collapsed Sidebar](siujang-collapsed-var-b.png)
-![Hover Popover Flyout](siujang-collapsed-hover-popover.png)
+![Variasi B Collapsed Sidebar](images/siujang-collapsed-var-b.png)
+![Hover Popover Flyout](images/siujang-collapsed-hover-popover.png)
 
 ### Keunggulan & Spesifikasi Teknis:
 1. **Tombol Circular Si Ujang (Docked Permanen):**
