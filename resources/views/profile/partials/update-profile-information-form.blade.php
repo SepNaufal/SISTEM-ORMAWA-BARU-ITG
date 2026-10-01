@@ -1,7 +1,9 @@
 <section>
     <header class="flex items-start gap-4 mb-6">
         <div class="shrink-0 w-12 h-12 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl">
-            <span class="material-symbols-rounded">person</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
         </div>
         <div>
             <h2 class="text-xl font-bold text-slate-900">
