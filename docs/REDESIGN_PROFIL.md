@@ -31,9 +31,9 @@ Setiap blok form (Informasi, Tambahan, Keamanan) kini memiliki spesifikasi berik
 - Memberikan efek bayangan yang lebar, sangat halus (hanya 4% opacity), dan pendaran yang premium.
 
 ### 3.3 Visual Header Form Terstruktur
-Setiap sub-bagian kini menggunakan *flex layout* dengan ikon pendamping (pastel *backdrop*) untuk membedakan kategori:
-- **Informasi Profil:** Ikon *Person* biru pastel
-- **Data Tambahan Profil:** Ikon *Assignment* (dokumen) biru pastel
+Setiap sub-bagian kini menggunakan *flex layout* dengan ikon pendamping (pastel *backdrop*) untuk membedakan kategori (menggunakan *Raw SVG Heroicons* agar tidak bergantung pada pustaka eksternal):
+- **Informasi Profil:** Ikon *User/Person* biru pastel
+- **Data Tambahan Profil:** Ikon *Document* biru pastel
 - **Keamanan:** Ikon *Lock* biru pastel
 
 Ditambah pemisah (`hr class="border-slate-100 mb-6"`) yang dengan tegas memisahkan bagian deskripsi dengan label *input*, mempermudah pengguna membaca dan mengisi data (*scanability*).
