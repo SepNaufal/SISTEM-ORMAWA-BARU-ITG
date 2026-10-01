@@ -31,7 +31,7 @@
     <!-- Notification Bell -->
     <a href="{{ route('notifikasi.index') }}" 
        title="Pusat Notifikasi Sistem ({{ $unreadNotifCount }} belum dibaca)"
-       class="relative p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/90 text-slate-600 hover:text-slate-900 transition shadow-xs shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+       class="relative p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/90 text-slate-600 hover:text-slate-900 transition shadow-xs shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
         </svg>
@@ -45,7 +45,7 @@
     <!-- Tombol Pintas Universal: Lapor Bug / Kendala Sistem -->
     <a href="{{ route('bug.create', ['url' => url()->current()]) }}" 
        title="Laporkan kendala, bug, atau error sistem ke BKHM" 
-       class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/90 rounded-xl transition shadow-xs shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500">
+       class="inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/90 rounded-xl transition shadow-xs shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500">
         <svg class="w-4 h-4 text-rose-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
         </svg>
@@ -59,7 +59,7 @@
     <div class="relative">
         <x-dropdown align="right" width="w-64">
             <x-slot name="trigger">
-                <button class="flex items-center gap-2 p-1 pl-1.5 pr-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/90 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 shadow-xs group" aria-label="Menu pengguna">
+                <button class="flex items-center gap-1.5 sm:gap-2 p-1 pl-1 sm:pl-1.5 pr-1.5 sm:pr-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/90 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 shadow-xs group" aria-label="Menu pengguna">
                     @if ($avatarUser->foto_profil)
                         <img class="h-8 w-8 rounded-lg object-cover border border-slate-200 shrink-0" src="{{ asset('storage/'.$avatarUser->foto_profil) }}" alt="Foto profil {{ $avatarUser->name ?? 'User' }}">
                     @else

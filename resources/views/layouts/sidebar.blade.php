@@ -1,4 +1,25 @@
-<nav :class="sidebarOpen ? 'w-64' : 'w-20'" :data-collapsed="sidebarOpen ? 'false' : 'true'" aria-label="Navigasi utama" class="relative bg-[#0B1528] text-white transition-all duration-300 flex flex-col h-full border-r border-[#1E2D4A] select-none z-30">
+{{-- Backdrop Mobile Drawer --}}
+<div x-show="isMobile && sidebarOpen" 
+     x-transition:enter="transition-opacity ease-linear duration-200"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition-opacity ease-linear duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     @click="sidebarOpen = false" 
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 lg:hidden" 
+     x-cloak></div>
+
+<nav :class="{
+        'translate-x-0 w-64 fixed inset-y-0 left-0 z-50 shadow-2xl': isMobile && sidebarOpen,
+        '-translate-x-full fixed inset-y-0 left-0 z-50': isMobile && !sidebarOpen,
+        'relative z-30': !isMobile,
+        'w-64': !isMobile && sidebarOpen,
+        'w-20': !isMobile && !sidebarOpen
+     }" 
+     :data-collapsed="(!isMobile && !sidebarOpen) ? 'true' : 'false'" 
+     aria-label="Navigasi utama" 
+     class="bg-[#0B1528] text-white transition-all duration-300 flex flex-col h-full border-r border-[#1E2D4A] select-none">
     <style>
         /* Saat ringkas: pusatkan ikon agar sejajar dengan logo ITG di atas. */
         nav[data-collapsed="true"] a,
@@ -30,6 +51,9 @@
                 <span class="block text-[11px] text-slate-400 font-medium truncate">Institut Teknologi Garut</span>
             </div>
         </a>
+        <button x-show="isMobile" @click="sidebarOpen = false" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition lg:hidden" aria-label="Tutup Menu">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
     </div>
 
     {{-- Nav Items Body --}}

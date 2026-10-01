@@ -20,12 +20,24 @@
             Lewati ke konten utama
         </a>
         <div class="min-h-screen bg-slate-50" x-data="{
-            sidebarOpen: localStorage.getItem('skin.sidebarOpen') !== null
-                ? localStorage.getItem('skin.sidebarOpen') === '1'
-                : window.matchMedia('(min-width: 1024px)').matches,
+            isMobile: window.innerWidth < 1024,
+            sidebarOpen: window.innerWidth >= 1024 
+                ? (localStorage.getItem('skin.sidebarOpen') !== null ? localStorage.getItem('skin.sidebarOpen') === '1' : true)
+                : false,
             toggleSidebar() {
                 this.sidebarOpen = !this.sidebarOpen;
-                localStorage.setItem('skin.sidebarOpen', this.sidebarOpen ? '1' : '0');
+                if (!this.isMobile) {
+                    localStorage.setItem('skin.sidebarOpen', this.sidebarOpen ? '1' : '0');
+                }
+            },
+            init() {
+                window.addEventListener('resize', () => {
+                    const wasMobile = this.isMobile;
+                    this.isMobile = window.innerWidth < 1024;
+                    if (wasMobile !== this.isMobile) {
+                        this.sidebarOpen = !this.isMobile && (localStorage.getItem('skin.sidebarOpen') !== null ? localStorage.getItem('skin.sidebarOpen') === '1' : true);
+                    }
+                });
             }
         }">
             <div class="flex h-screen overflow-hidden">
@@ -121,10 +133,10 @@
 
                                 {{-- Page Title & Academic Year Badge (Flex-nowrap agar satu baris) --}}
                                 <div class="flex items-center gap-2.5 flex-nowrap min-w-0">
-                                    <h1 class="text-sm sm:text-base lg:text-lg font-extrabold text-slate-900 tracking-tight leading-tight truncate max-w-[220px] md:max-w-xs xl:max-w-md" title="{{ $displayTitle }}">
+                                    <h1 class="text-sm sm:text-base lg:text-lg font-extrabold text-slate-900 tracking-tight leading-tight truncate max-w-[160px] sm:max-w-xs xl:max-w-md" title="{{ $displayTitle }}">
                                         {{ $displayTitle }}
                                     </h1>
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[10px] sm:text-[11px] font-bold tracking-wide shadow-xs shrink-0 select-none whitespace-nowrap">
+                                    <span class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[10px] sm:text-[11px] font-bold tracking-wide shadow-xs shrink-0 select-none whitespace-nowrap">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                         T.A. 2026/2027 Ganjil
                                     </span>
