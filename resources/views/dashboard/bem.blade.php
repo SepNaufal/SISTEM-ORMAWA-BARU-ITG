@@ -54,8 +54,22 @@
             </div>
 
             <div class="bg-white p-4 rounded shadow">
-                <h3 class="font-bold mb-2">Jadwal Terpadu Fasilitas & Barang</h3>
-                <p class="text-xs text-gray-500 mb-4">Klik pada agenda untuk melihat detail kegiatan</p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 border-b pb-3">
+                    <div>
+                        <h3 class="font-bold text-slate-900">Jadwal Terpadu Fasilitas & Barang</h3>
+                        <p class="text-xs text-slate-500 mt-1">Klik pada agenda untuk melihat detail kegiatan</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-4 text-xs mt-2 sm:mt-0">
+                        <span class="inline-flex items-center gap-1.5 font-medium text-slate-600">
+                            <span class="w-3 h-3 rounded-full bg-indigo-500 shadow-sm ring-2 ring-indigo-100"></span> 
+                            Fasilitas
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 font-medium text-slate-600">
+                            <span class="w-3 h-3 rounded-full bg-amber-500 shadow-sm ring-2 ring-amber-100"></span> 
+                            Barang
+                        </span>
+                    </div>
+                </div>>
                 <x-calendar-style />
                 <div class="skin-calendar-wrapper">
                     <div id="calendar"></div>

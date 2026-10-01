@@ -139,7 +139,21 @@
 
                 <!-- Calendar / Facility Usage -->
                 <div class="lg:col-span-3 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <h3 class="text-lg font-bold mb-4">Kalender Pemakaian Fasilitas</h3>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 border-b pb-3">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Kalender Pemakaian Fasilitas</h3>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4 text-xs mt-2 sm:mt-0">
+                            <span class="inline-flex items-center gap-1.5 font-medium text-slate-600">
+                                <span class="w-3 h-3 rounded-full bg-indigo-500 shadow-sm ring-2 ring-indigo-100"></span> 
+                                Fasilitas
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 font-medium text-slate-600">
+                                <span class="w-3 h-3 rounded-full bg-amber-500 shadow-sm ring-2 ring-amber-100"></span> 
+                                Rapat
+                            </span>
+                        </div>
+                    </div>
                     <x-calendar-style />
                     <div class="skin-calendar-wrapper">
                         <div id="calendar"></div>
