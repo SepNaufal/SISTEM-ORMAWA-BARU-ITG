@@ -1,13 +1,19 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Data Tambahan Profil') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Perbarui data tambahan seperti kontak, kepengurusan, dan tanda tangan digital untuk keperluan cetak surat.') }}
-        </p>
+    <header class="flex items-start gap-4 mb-6">
+        <div class="shrink-0 w-12 h-12 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl">
+            <span class="material-symbols-rounded">assignment</span>
+        </div>
+        <div>
+            <h2 class="text-xl font-bold text-slate-900">
+                Data Tambahan Profil
+            </h2>
+            <p class="mt-1 text-sm text-slate-500">
+                Lengkapi data pendukung seperti kontak, kepengurusan, dan tanda tangan digital.
+            </p>
+        </div>
     </header>
+
+    <hr class="border-slate-100 mb-6">
 
     <form method="post" action="{{ route('profile.data.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf

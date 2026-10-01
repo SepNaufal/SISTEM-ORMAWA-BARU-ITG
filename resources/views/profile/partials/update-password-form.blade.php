@@ -1,13 +1,19 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Update Password') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
-        </p>
+    <header class="flex items-start gap-4 mb-6">
+        <div class="shrink-0 w-12 h-12 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl">
+            <span class="material-symbols-rounded">lock</span>
+        </div>
+        <div>
+            <h2 class="text-xl font-bold text-slate-900">
+                Keamanan
+            </h2>
+            <p class="mt-1 text-sm text-slate-500">
+                Gunakan password yang kuat dan acak untuk menjaga keamanan akun Anda.
+            </p>
+        </div>
     </header>
+
+    <hr class="border-slate-100 mb-6">
 
     <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
         @csrf

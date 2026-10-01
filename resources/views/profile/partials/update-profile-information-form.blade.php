@@ -1,13 +1,19 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
+    <header class="flex items-start gap-4 mb-6">
+        <div class="shrink-0 w-12 h-12 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl">
+            <span class="material-symbols-rounded">person</span>
+        </div>
+        <div>
+            <h2 class="text-xl font-bold text-slate-900">
+                Informasi Profil
+            </h2>
+            <p class="mt-1 text-sm text-slate-500">
+                Perbarui nama profil dan alamat email akun Anda.
+            </p>
+        </div>
     </header>
+
+    <hr class="border-slate-100 mb-6">
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
